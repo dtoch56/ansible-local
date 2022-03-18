@@ -1,0 +1,14 @@
+reps:
+  # Ansible-playbooks for different environments
+  - path: "develz/ansible"
+    urls:
+      - "git@bitbucket.org:dtoch-devops/ansible-dev.git"
+      - "git@bitbucket.org:dtoch-devops/ansible-prod.git"
+      - "git@bitbucket.org:dtoch-devops/ansible-staging.git"
+      - "git@bitbucket.org:dtoch-devops/ansible-test.git"
+
+  # Terraform tasks
+  - path: "develz/terraform"
+    urls:
+      - "git@bitbucket.org:dtoch-devops/yandex.git"
+

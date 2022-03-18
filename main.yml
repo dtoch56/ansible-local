@@ -1,0 +1,9 @@
+---
+- name: All-in-one local installatio playbook
+  hosts: localhost
+
+  tasks:
+    - name: Clone git repositories
+      include_tasks: reps.yml
+      tags:
+        - reps
