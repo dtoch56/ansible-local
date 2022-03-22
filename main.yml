@@ -2,8 +2,16 @@
 - name: All-in-one local installatio playbook
   hosts: localhost
 
+  vars_files:
+    - vars/reps.yml
+
   tasks:
+    - name: Install linux tools
+      include_tasks: tasks/tools.yml
+      tags:
+        - tools
+
     - name: Clone git repositories
-      include_tasks: reps.yml
+      include_tasks: tasks/reps.yml
       tags:
         - reps

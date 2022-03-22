@@ -1,2 +1,6 @@
 ---
-- name:
+- name: Loop over repos
+  include_tasks: tasks/reps/clone_repositories.yml
+  with_items: '{{ reps }}'
+  loop_control:
+     loop_var: grouped_repos

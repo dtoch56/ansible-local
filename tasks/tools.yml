@@ -1,0 +1,9 @@
+---
+- name: Install packages
+  ansible.builtin.package:
+    name:
+      - git
+      - sublime-text
+      - vim
+    state: latest
+  become: yes

@@ -6,9 +6,30 @@ reps:
       - "git@bitbucket.org:dtoch-devops/ansible-prod.git"
       - "git@bitbucket.org:dtoch-devops/ansible-staging.git"
       - "git@bitbucket.org:dtoch-devops/ansible-test.git"
+      - "git@bitbucket.org:dtoch-devops/ansible-test.git"
+      - "git@gitlab.develz.ru:infrastructure/ansible/local.git"
 
   # Terraform tasks
   - path: "develz/terraform"
     urls:
       - "git@bitbucket.org:dtoch-devops/yandex.git"
 
+  # Ansible roles
+  - path: "dtoch/ansible/roles"
+    urls:
+      - "git@github.com:dtoch56/ansible-role-ssh.git"
+      - "git@github.com:dtoch56/ansible-role-upgrade-packages.git"
+      - "git@github.com:dtoch56/ansible-role-s3cmd.git"
+      - "git@github.com:dtoch56/ansible-role-prepare-host"
+      - "git@github.com:dtoch56/ansible-role-proxmox-provision.git"
+      - "git@github.com:dtoch56/ansible-role-rabbitmq.git"
+      - "git@github.com:dtoch56/ansible-role-initialize-server-for-ansible.git"
+      - "git@github.com:dtoch56/ansible-role-haproxy.git"
+      - "git@github.com:dtoch56/ansible-role-bash-prompt.git"
+      - "git@github.com:dtoch56/ansible-role-test.git"
+
+  # Docker
+  - path: "dtoch/docker"
+    urls:
+#      - "git@github.com:dtoch56/docker-logrotate.git"
+      - "git@github.com:dtoch56/docker-nginx-vts.git"
