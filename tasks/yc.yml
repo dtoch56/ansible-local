@@ -1,0 +1,18 @@
+---
+# yc - The Yandex.Cloud command-line interface (CLI) provides downloadable software for managing your cloud resources from the command line.
+# https://cloud.yandex.com/en-ru/docs/cli/quickstart#install
+
+- name: yc | Download yc installation script
+  ansible.builtin.get_url:
+    url: https://storage.yandexcloud.net/yandexcloud-yc/install.sh
+    dest: /tmp/install_yc.sh
+    mode: '0700'
+    force: yes
+
+- name: yc | Install yc
+  ansible.builtin.shell: /tmp/install_yc.sh
+
+- name: yc | Remove yc installation file
+  ansible.builtin.file:
+    path: /tmp/install_yc.sh
+    state: absent

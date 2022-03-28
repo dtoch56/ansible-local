@@ -1,1 +1,40 @@
 root_directory: ~/projects
+
+krew_plugins:
+  # Manage cert-manager resources inside your cluster | https://github.com/jetstack/cert-manager | ★8k
+  - cert-manager
+  # Switch between contexts in your kubeconfig | https://github.com/ahmetb/kubectx | ★12k
+  - ctx
+  # Like `kubectl get all` but _really_ everything | https://github.com/corneliusweig/ketall | ★323
+  - get-all
+  # Interact with ingress-nginx | https://kubernetes.github.io/ingress-nginx/kubectl-plugin | ★11k
+  - ingress-nginx
+  # Switch between Kubernetes namespaces | https://github.com/ahmetb/kubectx | ★12k
+  - ns
+  # Scans your clusters for potential resource issues | https://popeyecli.io | ★3.1k
+  - popeye
+  # Kubernetes static code analysis | https://github.com/zegl/kube-score | ★1.4k
+  - score
+  # Start a remote packet capture on pods using tcpdump and wireshark | https://github.com/eldadru/ksniff | ★1.8k
+  - sniff
+  # Trace Kubernetes pods and nodes with system tools | https://github.com/iovisor/kubectl-trace | ★1.4k
+  - trace
+  # Show a tree of object hierarchies through ownerReferences | https://github.com/ahmetb/kubectl-tree | ★1.9k
+  - tree
+
+helm_plugins:
+  # Show a diff explaing what a helm upgrade and helm rollback would change | ★1.3k
+  - name: diff
+    url: https://github.com/databus23/helm-diff
+  # Manage secrets with Git workflow and store them anywhere | ★413
+  - name: secrets
+    url: https://github.com/jkroepke/helm-secrets
+  # Monitor a release and rollback based on Prometheus/ElasticSearch query | ★360
+  - name: monitor
+    url: https://github.com/ContainerSolutions/helm-monitor
+
+minikube_addons:
+  - dashboard
+  - default-storageclass
+  - metrics-server
+  - storage-provisioner

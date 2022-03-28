@@ -1,0 +1,27 @@
+---
+# terraform - is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services.
+# https://www.terraform.io/docs
+
+- name: Terraform | yum-utils
+  ansible.builtin.package:
+    name: yum-utils
+    state: latest
+  become: true
+
+- name: Terraform | Add repository
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  become: true
+
+- name: Terraform | Install terraform
+  ansible.builtin.package:
+    name: terraform
+    state: latest
+  become: true
+
+- name: Terraform | Enable Tab completion
+  ansible.builtin.shell: terraform -install-autocomplete
+  # ignore when: "already installed"
+  ignore_errors: yes

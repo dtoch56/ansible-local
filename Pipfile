@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 ansible = "*"
+"github3.py" = "*"
 
 [dev-packages]
 

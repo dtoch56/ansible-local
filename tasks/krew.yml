@@ -1,0 +1,19 @@
+---
+# Krew - package manager for kubectl plugins
+# https://krew.sigs.k8s.io/docs/user-guide/setup/install/
+
+- name: krew | Download and install krew
+  ansible.builtin.shell: cat tasks/krew/install.sh
+
+- name: krew | Add the $HOME/.krew/bin directory to your PATH environment variable
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"'
+
+#- name: Ckrew | heck the installation
+#  ansible.builtin.shell: kubectl krew
+
+- name: krew | Install Krew plugins
+  ansible.builtin.shell: "kubectl krew install {{ item }}"
+  with_items: "{{ krew_plugins }}"
+

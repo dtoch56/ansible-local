@@ -1,0 +1,19 @@
+---
+# minikube - local Kubernetes, focusing on making it easy to learn and develop for Kubernetes.
+# https://minikube.sigs.k8s.io/docs/start/
+
+- name: Minikube | Download minikube installation script
+  get_url:
+    url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    dest: /tmp/minikube-linux-amd64
+    mode: '0700'
+
+- name: Minikube | Install minikube
+  ansible.builtin.shell: install minikube-linux-amd64 /usr/local/bin/minikube
+  args:
+    chdir: /tmp/
+  become: yes
+
+- name: Minikube | Enable minikube addons
+  ansible.builtin.shell: "minikube addons enable {{ item }}"
+  with_items: "{{ minikube_addons }}"

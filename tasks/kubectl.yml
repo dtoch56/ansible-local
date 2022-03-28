@@ -1,0 +1,72 @@
+---
+# kubectl - command line tool to control Kubernetes clusters
+# https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+- name: kubectl | Get latest stable release name
+  ansible.builtin.shell: curl -L -s https://dl.k8s.io/release/stable.txt
+  register: stable_release
+
+- name: kubectl | Get checksum
+  ansible.builtin.uri:
+    url: "https://dl.k8s.io/{{ stable_release.stdout }}/bin/linux/amd64/kubectl.sha256"
+    return_content: yes
+    force: yes
+  register: checksum
+
+- name: "kubectl | Download the latest release {{ stable_release.stdout }}"
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/{{ stable_release.stdout }}/bin/linux/amd64/kubectl"
+    dest: /tmp/kubectl
+    mode: '0700'
+    checksum: "sha256:{{ checksum.content }}"
+    force: yes
+
+- name: kubectl | Install kubectl
+  ansible.builtin.shell: install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+  become: yes
+
+- name: kubectl | Test to ensure the version you installed is up-to-date
+  ansible.builtin.shell:
+    cmd: kubectl version --client --short
+  register: kubectl_version
+
+- ansible.builtin.debug:
+    msg: "{{ kubectl_version.stdout }}"
+
+- name: kubectl | kubectl bash-completion
+  ansible.builtin.shell:
+    cmd: kubectl completion bash > /etc/bash_completion.d/kubectl
+  become: yes
+
+- name: kubectl | Remove kubectl installation file
+  ansible.builtin.file:
+    path: /tmp/kubectl
+    state: absent
+
+# kubecolor - Colorize your kubectl output
+- name: kubectl | Get latest release of kubecolor
+  community.general.github_release:
+    user: hidetatz
+    repo: kubecolor
+    action: latest_release
+  register: latest_kubecolor
+
+- name: "Installing kubecolor {{ latest_kubecolor.tag }}"
+  ansible.builtin.unarchive:
+    src: "https://github.com/hidetatz/kubecolor/releases/download/{{ latest_kubecolor.tag }}/kubecolor_{{ latest_kubecolor.tag | replace('v','')  }}_Linux_x86_64.tar.gz"
+    include: kubecolor
+    dest: /usr/local/bin
+    mode: 0755
+    remote_src: yes
+  become: yes
+
+# Bash aliases
+- name: kubectl | bash alias for kubecolor
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: alias k=kubecolor
+
+- name: kubectl | bash completion for alias of kubecolor
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: complete -o bashdefault -o default -o nospace -F __start_kubectl k

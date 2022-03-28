@@ -1,5 +1,5 @@
 ---
-- name: All-in-one local installatio playbook
+- name: All-in-one local installation playbook
   hosts: localhost
 
   vars_files:
@@ -8,10 +8,30 @@
   tasks:
     - name: Install linux tools
       include_tasks: tasks/tools.yml
-      tags:
-        - tools
+      tags: [ tools ]
 
-    - name: Clone git repositories
-      include_tasks: tasks/reps.yml
-      tags:
-        - reps
+#    - name: Clone git repositories
+#      include_tasks: tasks/reps.yml
+#      tags: [ reps ]
+
+    - ansible.builtin.include: tasks/terraform.yml
+      tags: [ terraform ]
+
+    - ansible.builtin.include: tasks/kubectl.yml
+      tags: [ kubectl ]
+
+    - ansible.builtin.include: tasks/krew.yml
+      tags: [ krew ]
+
+    - ansible.builtin.include: tasks/yc.yml
+      tags: [ yc ]
+
+    - ansible.builtin.include: tasks/helm.yml
+      tags: [ helm ]
+
+    - ansible.builtin.include: tasks/minikube.yml
+      tags: [ minikube ]
+
+    - ansible.builtin.include: tasks/jx.yml
+      tags: [ jx ]
+

@@ -1,0 +1,24 @@
+---
+# Helm - The package manager for Kubernetes
+# https://helm.sh/docs/intro/install/
+
+- name: helm | Install openSSL
+  ansible.builtin.package:
+    name:
+      - openssl
+    state: present
+  become: yes
+
+- name: helm | Install Helm
+  ansible.builtin.shell: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+- name: helm | Install Helm plugins
+  ansible.builtin.shell: "helm plugin install {{ item.url }}"
+  with_items: "{{ helm_plugins }}"
+  register: helm_plugin_result
+  failed_when:
+    - "'Error: plugin already exists' not in helm_plugin_result.stderr"
+    - "helm_plugin_result.rc != 0"
+  changed_when:
+    - "'Error: plugin already exists' not in helm_plugin_result.stderr"
+    - helm_plugin_result.rc == 0
