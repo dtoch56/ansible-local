@@ -10,7 +10,7 @@
     path: ~/.bashrc
     line: 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"'
 
-#- name: Ckrew | heck the installation
+#- name: krew | Check the installation
 #  ansible.builtin.shell: kubectl krew
 
 - name: krew | Install Krew plugins

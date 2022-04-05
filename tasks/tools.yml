@@ -1,9 +1,8 @@
----
-- name: Install packages
+- name: tools | Install packages
   ansible.builtin.package:
     name:
       - git
-      - sublime-text
       - vim
+      - bash-completion
     state: latest
   become: yes

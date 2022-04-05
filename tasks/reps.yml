@@ -1,5 +1,5 @@
 ---
-- name: Loop over repos
+- name: reps | Loop over repos
   include_tasks: tasks/reps/clone_repositories.yml
   with_items: '{{ reps }}'
   loop_control:

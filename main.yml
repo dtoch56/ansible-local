@@ -7,15 +7,18 @@
 
   tasks:
     - name: Install linux tools
-      include_tasks: tasks/tools.yml
+      import_tasks: tasks/tools.yml
       tags: [ tools ]
 
-#    - name: Clone git repositories
-#      include_tasks: tasks/reps.yml
-#      tags: [ reps ]
+    - name: Clone git repositories
+      import_tasks: tasks/reps.yml
+      tags: [ reps ]
 
-    - ansible.builtin.include: tasks/terraform.yml
-      tags: [ terraform ]
+    # - ansible.builtin.include: tasks/sublime.yml
+    #   tags: [ sublime ]
+
+    # - ansible.builtin.include: tasks/terraform.yml
+    #   tags: [ terraform ]
 
     - ansible.builtin.include: tasks/kubectl.yml
       tags: [ kubectl ]
