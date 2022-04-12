@@ -9,6 +9,13 @@
   ansible.builtin.lineinfile:
     path: ~/.bashrc
     line: 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"'
+  when: bashrc
+
+- name: krew | Add the $HOME/.krew/bin directory to your PATH environment variable
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    line: 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"'
+  when: zshrc
 
 #- name: krew | Check the installation
 #  ansible.builtin.shell: kubectl krew

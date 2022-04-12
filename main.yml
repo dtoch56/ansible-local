@@ -6,6 +6,31 @@
     - vars/reps.yml
 
   tasks:
+    - name: Check if bash installed
+      ansible.builtin.stat:
+        path: ~/.bashrc
+      register: bashrc_file
+      tags: [ always ]
+
+    - name: Check if zsh installed
+      ansible.builtin.stat:
+        path: ~/.zshrc
+      register: zshrc_file
+      tags: [ always ]
+    
+    - name: Setting host facts using complex arguments
+      ansible.builtin.set_fact:
+        bashrc: "{{ bashrc_file.stat.exists }}"
+        zshrc: "{{ zshrc_file.stat.exists }}"
+      tags: [ always ]
+    
+    - name: krew | Add the $HOME/.krew/bin directory to your PATH environment variable
+      ansible.builtin.lineinfile:
+        path: ~/.zshrc
+        line: 'export PATH=$HOME/bin:/usr/local/bin:$PATH'
+      when: zshrc
+      tags: [ always ]
+
     - name: Install linux tools
       import_tasks: tasks/tools.yml
       tags: [ tools ]
@@ -13,6 +38,10 @@
     - name: Clone git repositories
       import_tasks: tasks/reps.yml
       tags: [ reps ]
+    
+    - import_tasks: tasks/docker.yml
+      tags: [ docker ]
+      become: true
 
     # - ansible.builtin.include: tasks/sublime.yml
     #   tags: [ sublime ]

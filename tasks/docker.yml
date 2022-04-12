@@ -1,0 +1,15 @@
+---
+- name: docker | Run docker role 
+  ansible.builtin.include_role:
+    name: geerlingguy.docker
+  vars:
+    docker_users: ["{{ ansible_user_id }}"]
+    docker_install_compose: true
+
+- name: docker | python packages
+  ansible.builtin.include_role:
+    name: geerlingguy.pip
+  vars:
+    pip_install_packages:
+      - docker
+      - docker-compose

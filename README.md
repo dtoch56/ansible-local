@@ -1,6 +1,6 @@
 # Local #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Ansible playbook for initialization of tools and repositories for work.
 
 ### What is this repository for? ###
 
@@ -11,7 +11,6 @@ ansible-playbook main.yml --ask-become-pass
 ## Available tags
 
 ### tools
-
 ### reps
 ### terraform
 ### kubectl
