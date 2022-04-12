@@ -17,3 +17,15 @@
 - name: Minikube | Enable minikube addons
   ansible.builtin.shell: "minikube addons enable {{ item }}"
   with_items: "{{ minikube_addons }}"
+
+- name: Minikube | Minikube bash-completion
+  ansible.builtin.shell:
+    cmd: minikube completion bash > /etc/bash_completion.d/minikube 
+  become: yes
+  when: bashrc
+
+- name: Minikube | zsh completion for Minikube
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    line: source <(minikube completion zsh)
+  when: zshrc

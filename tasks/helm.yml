@@ -22,3 +22,15 @@
   changed_when:
     - "'Error: plugin already exists' not in helm_plugin_result.stderr"
     - helm_plugin_result.rc == 0
+
+- name: helm | helm bash-completion
+  ansible.builtin.shell:
+    cmd: helm completion bash > /etc/bash_completion.d/helm 
+  become: yes
+  when: bashrc
+
+- name: helm | zsh completion for helm
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    line: source <(helm completion zsh)
+  when: zshrc
