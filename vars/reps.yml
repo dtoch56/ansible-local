@@ -6,7 +6,6 @@ reps:
       - "git@bitbucket.org:dtoch-devops/ansible-prod.git"
       - "git@bitbucket.org:dtoch-devops/ansible-staging.git"
       - "git@bitbucket.org:dtoch-devops/ansible-test.git"
-      - "git@bitbucket.org:dtoch-devops/ansible-test.git"
       - "git@gitlab.develz.ru:infrastructure/ansible/local.git"
 
   # Terraform tasks
