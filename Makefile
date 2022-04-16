@@ -1,4 +1,4 @@
-.PHONY: help venv
+.PHONY: help venv run
 
 
 help:
@@ -6,6 +6,7 @@ help:
 	@echo 'Usage: make [TARGET]'
 	@echo 'Targets:'
 	@echo '  venv    Create virtual environment for application'
+	@echo '  run     Run main playbook'
 	@echo ''
 
 
@@ -13,3 +14,8 @@ venv:
 	python3 -m venv venv
 	source venv/bin/activate
 
+run:
+	ansible-playbook main.yml --ask-become-pass
+
+update:
+	pipenv update && ./bin/update_roles.sh

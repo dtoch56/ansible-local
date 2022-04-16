@@ -37,12 +37,12 @@
   when: docker_daemon_options.keys() | length > 0
   notify: restart docker
 
-# - name: Ensure Docker is started and enabled at boot.
-#   service:
-#     name: docker
-#     state: "{{ docker_service_state }}"
-#     enabled: "{{ docker_service_enabled }}"
-#   ignore_errors: "{{ ansible_check_mode }}"
+- name: Ensure Docker is started and enabled at boot.
+  service:
+    name: docker
+    state: "{{ docker_service_state }}"
+    enabled: "{{ docker_service_enabled }}"
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
