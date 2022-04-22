@@ -14,6 +14,16 @@
     chdir: /tmp/
   become: yes
 
+- name: Minikube | check the status of minikube.
+  command: minikube status
+  register: minikube_status
+  changed_when: false
+  ignore_errors: true
+
+- name: Minikube | start minikube if it's not running.
+  command: minikube start
+  when: "not minikube_status.stdout or 'Running' not in minikube_status.stdout"
+
 - name: Minikube | Enable minikube addons
   ansible.builtin.shell: "minikube addons enable {{ item }}"
   with_items: "{{ minikube_addons }}"

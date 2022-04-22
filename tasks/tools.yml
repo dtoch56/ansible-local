@@ -4,5 +4,6 @@
       - git
       - vim
       - bash-completion
+      - curl
     state: latest
   become: yes

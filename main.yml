@@ -23,7 +23,11 @@
         bashrc: "{{ bashrc_file.stat.exists }}"
         zshrc: "{{ zshrc_file.stat.exists }}"
       tags: [ always ]
-    
+
+    - name: chrome
+      import_tasks: tasks/chrome.yml
+      tags: [ chrome ]
+
     - name: krew | Add the $HOME/.krew/bin directory to your PATH environment variable
       ansible.builtin.lineinfile:
         path: ~/.zshrc

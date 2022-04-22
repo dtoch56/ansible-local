@@ -1,0 +1,26 @@
+---
+- name: chrome | install Google Chrome
+  block:
+    - name: chrome | Install apt-transport-https
+      ansible.builtin.apt:
+        state: latest
+        update_cache: true
+
+    - name: chrome | Add Apt signing key
+      ansible.builtin.apt_key:
+        url: "https://dl.google.com/linux/linux_signing_key.pub"
+        state: present
+
+    - name: chrome | Add repository into sources list
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+        state: present
+        filename: google-chrome
+
+    - name: chrome | Install google-chrome-stable
+      ansible.builtin.apt:
+        name: "google-chrome-stable"
+        state: latest
+        update_cache: true
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  become: yes

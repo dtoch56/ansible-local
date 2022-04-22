@@ -1,10 +1,12 @@
 ---
-- name: docker | Run docker role 
+- name: docker | Run docker role
   ansible.builtin.include_role:
     name: geerlingguy.docker
   vars:
     docker_users: ["{{ ansible_user_id }}"]
     docker_install_compose: true
+
+# ToDo: No docker group for user
 
 - name: docker | python packages
   ansible.builtin.include_role:
