@@ -36,5 +36,6 @@ helm_plugins:
 minikube_addons:
   - dashboard
   - default-storageclass
+  - ingress
   - metrics-server
   - storage-provisioner
