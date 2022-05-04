@@ -28,7 +28,7 @@
       import_tasks: tasks/chrome.yml
       tags: [ chrome ]
 
-    - name: krew | Add the $HOME/.krew/bin directory to your PATH environment variable
+    - name: Configure PATH environment variable
       ansible.builtin.lineinfile:
         path: ~/.zshrc
         line: 'export PATH=$HOME/bin:/usr/local/bin:$PATH'

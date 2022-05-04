@@ -7,3 +7,15 @@
       - curl
     state: latest
   become: yes
+
+- name: tools | Set vim as the default editor
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: 'export EDITOR=vim'
+  when: bashrc
+
+- name: tools | Set vim as the default editor
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    line: 'export EDITOR=vim'
+  when: zshrc
