@@ -28,7 +28,7 @@
 #      import_tasks: tasks/chrome.yml
 #      tags: [ chrome ]
 
-    - name: Export $PATH
+    - name: Configure PATH environment variable
       ansible.builtin.lineinfile:
         path: ~/.zshrc
         line: 'export PATH=$HOME/bin:/usr/local/bin:$PATH'
@@ -39,9 +39,9 @@
       ansible.builtin.import_tasks: tasks/tools.yml
       tags: [ tools ]
 
-#    - name: Clone git repositories
-#      ansible.builtin.import_tasks: tasks/reps.yml
-#      tags: [ reps ]
+    - name: Clone git repositories
+      ansible.builtin.import_tasks: tasks/reps.yml
+      tags: [ reps ]
     
     - ansible.builtin.import_tasks: tasks/docker.yml
       tags: [ docker ]
