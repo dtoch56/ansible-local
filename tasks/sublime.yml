@@ -24,12 +24,12 @@
 
 - name: sublime | CentOS/RHEL
   block:
-    - name: Terraform | prerequisites
+    - name: sublime | prerequisites
       ansible.builtin.package:
         name: yum-utils
         state: latest
 
-    - name: Terraform | Add repository
+    - name: sublime | Add repository
       ansible.builtin.yum_repository:
         name: sublime-text
         description: sublime-text stable YUM repo
@@ -42,17 +42,17 @@
 
 - name: sublime | Fedora
   block:
-    - name: Terraform | prerequisites
+    - name: sublime | prerequisites
       ansible.builtin.package:
         name: dnf-plugins-core
         state: latest
 
-    - name: Terraform | Add repository key
+    - name: sublime | Add repository key
       ansible.builtin.rpm_key:
         state: present
         key: https://download.sublimetext.com/sublimehq-rpm-pub.gpg
 
-    - name: Terraform | Add repository
+    - name: sublime | Add repository
       ansible.builtin.command:
         cmd: dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo 
         warn: false
@@ -62,7 +62,7 @@
   become: true
 
 
-- name: sublime | Install packages
+- name: sublime | Install pre-required packages
   ansible.builtin.package:
     name:
       - dirmngr
@@ -73,9 +73,7 @@
     state: latest
   become: yes
 
-
-
-- name: sublime | Install packages
+- name: sublime | Install sublime-text
   ansible.builtin.package:
     name:
       - sublime-text

@@ -24,11 +24,11 @@
         zshrc: "{{ zshrc_file.stat.exists }}"
       tags: [ always ]
 
-    - name: chrome
-      import_tasks: tasks/chrome.yml
-      tags: [ chrome ]
+#    - name: chrome
+#      import_tasks: tasks/chrome.yml
+#      tags: [ chrome ]
 
-    - name: krew | Add the $HOME/.krew/bin directory to your PATH environment variable
+    - name: Export $PATH
       ansible.builtin.lineinfile:
         path: ~/.zshrc
         line: 'export PATH=$HOME/bin:/usr/local/bin:$PATH'
@@ -36,38 +36,38 @@
       tags: [ always ]
 
     - name: Install linux tools
-      import_tasks: tasks/tools.yml
+      ansible.builtin.import_tasks: tasks/tools.yml
       tags: [ tools ]
 
-    - name: Clone git repositories
-      import_tasks: tasks/reps.yml
-      tags: [ reps ]
+#    - name: Clone git repositories
+#      ansible.builtin.import_tasks: tasks/reps.yml
+#      tags: [ reps ]
     
-    - import_tasks: tasks/docker.yml
+    - ansible.builtin.import_tasks: tasks/docker.yml
       tags: [ docker ]
       become: true
 
-    # - ansible.builtin.include: tasks/sublime.yml
-    #   tags: [ sublime ]
+    - ansible.builtin.import_tasks: tasks/sublime.yml
+      tags: [ sublime ]
 
     # - ansible.builtin.include: tasks/terraform.yml
     #   tags: [ terraform ]
 
-    - ansible.builtin.include: tasks/kubectl.yml
+    - ansible.builtin.include_tasks: tasks/kubectl.yml
       tags: [ kubectl ]
 
-    - ansible.builtin.include: tasks/krew.yml
+    - ansible.builtin.include_tasks: tasks/krew.yml
       tags: [ krew ]
 
-    - ansible.builtin.include: tasks/yc.yml
+    - ansible.builtin.include_tasks: tasks/yc.yml
       tags: [ yc ]
 
-    - ansible.builtin.include: tasks/helm.yml
+    - ansible.builtin.include_tasks: tasks/helm.yml
       tags: [ helm ]
 
-    - ansible.builtin.include: tasks/minikube.yml
+    - ansible.builtin.include_tasks: tasks/minikube.yml
       tags: [ minikube ]
 
-    - ansible.builtin.include: tasks/jx.yml
+    - ansible.builtin.include_tasks: tasks/jx.yml
       tags: [ jx ]
 

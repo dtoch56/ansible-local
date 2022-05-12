@@ -15,7 +15,7 @@ venv:
 	source venv/bin/activate
 
 run:
-	ansible-playbook main.yml --ask-become-pass
+	ansible-playbook main.yml --ask-become-pass $(A)
 
 update:
 	pipenv update && ./bin/update_roles.sh
