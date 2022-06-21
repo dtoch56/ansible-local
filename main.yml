@@ -71,3 +71,5 @@
     - ansible.builtin.include_tasks: tasks/jx.yml
       tags: [ jx ]
 
+    - ansible.builtin.import_tasks: tasks/direnv.yml
+      tags: [ direnv ]

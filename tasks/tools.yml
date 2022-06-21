@@ -5,6 +5,7 @@
       - vim
       - bash-completion
       - curl
+      - jq
     state: latest
   become: yes
 

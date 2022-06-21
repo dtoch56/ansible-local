@@ -18,4 +18,4 @@ run:
 	ansible-playbook main.yml --ask-become-pass $(A)
 
 update:
-	pipenv update && ./bin/update_roles.sh
+	pipenv update && ./bin/update_deps.sh

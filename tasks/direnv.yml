@@ -1,0 +1,11 @@
+---
+# direnv is an extension for your shell. It augments existing shells with a new feature that can load
+# and unload environment variables depending on the current directory.
+# https://direnv.net/
+# https://github.com/direnv/direnv
+
+- name: direnv | Install direnv
+  ansible.builtin.shell: curl -sfL https://direnv.net/install.sh | bash
+  environment:
+    bin_path: /usr/local/bin
+  become: yes
