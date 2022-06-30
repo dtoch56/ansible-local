@@ -42,7 +42,7 @@
     - name: Clone git repositories
       ansible.builtin.import_tasks: tasks/reps.yml
       tags: [ reps ]
-    
+
     - ansible.builtin.import_tasks: tasks/docker.yml
       tags: [ docker ]
       become: true
@@ -50,8 +50,8 @@
     - ansible.builtin.import_tasks: tasks/sublime.yml
       tags: [ sublime ]
 
-    # - ansible.builtin.include: tasks/terraform.yml
-    #   tags: [ terraform ]
+#    - ansible.builtin.include: tasks/terraform.yml
+#      tags: [ terraform ]
 
     - ansible.builtin.include_tasks: tasks/kubectl.yml
       tags: [ kubectl ]
