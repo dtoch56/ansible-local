@@ -53,6 +53,9 @@
 #    - ansible.builtin.include: tasks/terraform.yml
 #      tags: [ terraform ]
 
+    - ansible.builtin.include: tasks/terragrunt.yml
+      tags: [ terragrunt ]
+
     - ansible.builtin.include_tasks: tasks/kubectl.yml
       tags: [ kubectl ]
 
