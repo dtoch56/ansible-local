@@ -47,6 +47,9 @@
       tags: [ docker ]
       become: true
 
+    - ansible.builtin.import_tasks: tasks/toolbox.yml
+      tags: [ toolbox ]
+
     - ansible.builtin.import_tasks: tasks/sublime.yml
       tags: [ sublime ]
 

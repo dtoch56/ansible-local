@@ -1,0 +1,55 @@
+# JetBrains Toolbox App
+# Manage your IDEs the easy way
+# https://www.jetbrains.com/toolbox-app/download/download-thanks.html?platform=linux
+---
+- name: toolbox | Get latest release
+  ansible.builtin.uri:
+    url: https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release
+    http_agent: 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'
+    headers:
+      Origin: 'https://www.jetbrains.com'
+      Accept-Encoding: 'gzip, deflate, br'
+      Accept-Language: 'en-US,en;q=0.8'
+      Accept: 'application/json, text/javascript, */*; q=0.01'
+      Referer: 'https://www.jetbrains.com/toolbox/download/'
+      Connection: 'keep-alive'
+      DNT: '1'
+    return_content: yes
+  register: toolbox_latest_release
+
+- name: toolbox | Get checksum
+  ansible.builtin.uri:
+    url: "{{ toolbox_latest_release.json.TBA[0].downloads.linux.checksumLink }}"
+    return_content: yes
+    force: yes
+  register: checksum
+
+- name: "toolbox | download {{ toolbox_latest_release.json.TBA[0].downloads.linux.link }}"
+  ansible.builtin.get_url:
+    url: "{{ toolbox_latest_release.json.TBA[0].downloads.linux.link }}"
+    checksum: "sha256:{{ checksum.content[:64] }}"
+    dest: /tmp/jetbrains-toolbox.tar.gz
+    force: yes
+
+- name: toolbox | unarchive
+  ansible.builtin.unarchive:
+    src: /tmp/jetbrains-toolbox.tar.gz
+    dest: /tmp
+
+- name: "/tmp/jetbrains-toolbox-{{ toolbox_latest_release.json.TBA[0].build }}/jetbrains-toolbox"
+  ansible.builtin.copy:
+    src: "/tmp/jetbrains-toolbox-{{ toolbox_latest_release.json.TBA[0].build }}/jetbrains-toolbox"
+    dest: /usr/local/bin/jetbrains-toolbox
+    mode: 0755
+    owner: "{{ ansible_user_id }}"
+  become: yes
+
+- name: toolbox | Remove jetbrains-toolbox archive
+  ansible.builtin.file:
+    path: /tmp/jetbrains-toolbox.tar.gz
+    state: absent
+
+- name: toolbox | Remove jetbrains-toolbox archive
+  ansible.builtin.file:
+    path: "/tmp/jetbrains-toolbox-{{ toolbox_latest_release.json.TBA[0].build }}"
+    state: absent

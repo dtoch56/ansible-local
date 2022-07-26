@@ -51,7 +51,7 @@
     action: latest_release
   register: latest_kubecolor
 
-- name: "Installing kubecolor {{ latest_kubecolor.tag }}"
+- name: "kubectl | Installing kubecolor {{ latest_kubecolor.tag }}"
   ansible.builtin.unarchive:
     src: "https://github.com/hidetatz/kubecolor/releases/download/{{ latest_kubecolor.tag }}/kubecolor_{{ latest_kubecolor.tag | replace('v','')  }}_Linux_x86_64.tar.gz"
     include: kubecolor

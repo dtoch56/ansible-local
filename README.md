@@ -8,10 +8,15 @@ Ansible playbook for initialization of tools and repositories for work.
 make run
 ```
 
+```bash
+make run A='--tags toolbox'
+```
+
 ## Available tags
 
 ### tools
 ### reps
+### toolbox
 ### terraform
 ### kubectl
 ### krew
