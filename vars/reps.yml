@@ -13,6 +13,12 @@ reps:
     urls:
       - "git@bitbucket.org:dtoch-devops/yandex.git"
 
+  # Terraform modules
+  - path: "develz/terraform/modules"
+    urls:
+      - "git@github.com:dtoch56/terraform-yandex-folder.git"
+      - "git@github.com:dtoch56/terraform-yandex-kubernetes.git"
+
   # Ansible roles
   - path: "dtoch/ansible/roles"
     urls:

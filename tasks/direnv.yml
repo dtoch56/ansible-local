@@ -9,3 +9,15 @@
   environment:
     bin_path: /usr/local/bin
   become: yes
+
+- name: direnv | hook direnv into your bash shell
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: eval "$(direnv hook bash)"
+  when: bashrc
+
+- name: direnv | hook direnv into your zsh shell
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    line: eval "$(direnv hook zsh)"
+  when: zshrc
