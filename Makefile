@@ -7,6 +7,7 @@ help:
 	@echo 'Targets:'
 	@echo '  venv    Create virtual environment for application'
 	@echo '  run     Run main playbook'
+	@echo '  update  Update python dependencies and ansible roles'
 	@echo ''
 
 
