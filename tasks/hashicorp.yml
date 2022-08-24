@@ -1,0 +1,74 @@
+---
+
+- name: HashiCorp | Ubuntu/Debian
+  block:
+    - name: HashiCorp | prerequisites
+      ansible.builtin.package:
+        name:
+          - gnupg
+          - software-properties-common
+          - curl
+        state: latest
+    - name: HashiCorp | add repository keys
+      ansible.builtin.get_url:
+        url: https://apt.releases.hashicorp.com/gpg
+        dest: /etc/apt/keyrings/hashicorp.gpg
+        mode: '0644'
+        force: true
+# Key is stored in legacy trusted.gpg keyring
+#    - name: HashiCorp | add repository keys
+#      ansible.builtin.apt_key:
+#        url: https://apt.releases.hashicorp.com/gpg
+#        state: present
+    - name: HashiCorp | add repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/hashicorp.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+        state: present
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+  become: true
+
+
+- name: HashiCorp | CentOS/RHEL
+  block:
+    - name: HashiCorp | prerequisites
+      ansible.builtin.package:
+        name: yum-utils
+        state: latest
+    - name: HashiCorp | Add repository
+      ansible.builtin.yum_repository:
+        name: hashicorp
+        description: Hashicorp YUM repo
+        baseurl: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
+  become: true
+
+
+- name: HashiCorp | Fedora
+  block:
+    - name: HashiCorp | prerequisites
+      ansible.builtin.package:
+        name: dnf-plugins-core
+        state: latest
+    - name: HashiCorp | Add repository
+      ansible.builtin.command:
+        cmd: dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+        warn: false
+      args:
+        creates: /etc/yum.repos.d/hashicorp.repo
+  when: ansible_distribution == 'Fedora'
+  become: true
+
+
+- name: HashiCorp | Amazon Linux
+  block:
+    - name: HashiCorp | prerequisites
+      ansible.builtin.package:
+        name: yum-utils
+        state: latest
+    - name: HashiCorp | Add repository
+      ansible.builtin.yum_repository:
+        name: hashicorp
+        description: Hashicorp repo
+        baseurl: https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+  when: ansible_distribution == 'Amazon'
+  become: true
