@@ -22,5 +22,9 @@
         name: "google-chrome-stable"
         state: latest
         update_cache: true
+
+#    - name: chrome | Install from .deb
+#      ansible.builtin.apt:
+#        deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   become: yes
