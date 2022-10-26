@@ -6,6 +6,12 @@
     - vars/reps.yml
 
   tasks:
+    - name: Include all .yaml with variables
+      ansible.builtin.include_vars:
+        dir: vars
+        extensions:
+          - 'yml'
+
     - name: Check if bash installed
       ansible.builtin.stat:
         path: ~/.bashrc
@@ -50,14 +56,14 @@
     - ansible.builtin.import_tasks: tasks/toolbox.yml
       tags: [ toolbox ]
 
-    - ansible.builtin.import_tasks: tasks/sublime.yml
-      tags: [ sublime ]
+#    - ansible.builtin.import_tasks: tasks/sublime.yml
+#      tags: [ sublime ]
 
-    - ansible.builtin.include: tasks/terraform.yml
-      tags: [ terraform ]
-
-    - ansible.builtin.include: tasks/packer.yml
-      tags: [ packer ]
+#    - ansible.builtin.include: tasks/terraform.yml
+#      tags: [ terraform ]
+#
+#    - ansible.builtin.include: tasks/packer.yml
+#      tags: [ packer ]
 
     - ansible.builtin.include: tasks/terragrunt.yml
       tags: [ terragrunt ]
@@ -82,3 +88,9 @@
 
     - ansible.builtin.import_tasks: tasks/direnv.yml
       tags: [ direnv ]
+
+    - ansible.builtin.import_tasks: tasks/vscode.yml
+      tags: [ vscode ]
+
+    - ansible.builtin.import_tasks: tasks/dive.yml
+      tags: [ dive ]

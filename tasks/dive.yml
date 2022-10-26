@@ -1,0 +1,25 @@
+# Dive is a tool for exploring a docker image, layer contents, and discovering ways to shrink the size of your Docker/OCI image.
+# https://github.com/wagoodman/dive
+---
+- name: dive | Get latest release of dive
+  community.general.github_release:
+    user: wagoodman
+    repo: dive
+    action: latest_release
+  register: latest_dive
+
+
+- name: "dive | Installing dive {{ latest_dive.tag }}"
+  ansible.builtin.apt:
+    deb:  "https://github.com/wagoodman/dive/releases/download/{{ latest_dive.tag }}/dive_{{ latest_dive.tag | regex_replace('^v', '')}}_linux_amd64.deb"
+  become: yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: "dive | Installing dive {{ latest_dive.tag }}"
+  ansible.builtin.rpm:
+    deb:  "https://github.com/wagoodman/dive/releases/download/{{ latest_dive.tag }}/dive_{{ latest_dive.tag | regex_replace('^v', '')}}_linux_amd64.rpm"
+  become: yes
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
+
+
+
