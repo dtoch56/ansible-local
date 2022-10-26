@@ -1,3 +1,4 @@
+---
 - name: tools | Install packages
   ansible.builtin.package:
     name:

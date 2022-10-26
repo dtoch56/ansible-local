@@ -1,7 +1,6 @@
----
 # Krew - package manager for kubectl plugins
 # https://krew.sigs.k8s.io/docs/user-guide/setup/install/
-
+---
 - name: krew | Download and install krew
   ansible.builtin.shell: tasks/krew/install.sh
 

@@ -1,5 +1,5 @@
----
 
+---
 - name: HashiCorp | Ubuntu/Debian
   block:
     - name: HashiCorp | prerequisites

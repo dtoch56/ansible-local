@@ -1,7 +1,6 @@
----
 # kubectl - command line tool to control Kubernetes clusters
 # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
-
+---
 - name: kubectl | Get latest stable release name
   ansible.builtin.shell: curl -L -s https://dl.k8s.io/release/stable.txt
   register: stable_release

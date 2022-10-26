@@ -1,3 +1,4 @@
+# Google Chrome is a cross-platform web browser developed by Google.
 ---
 - name: chrome | install Google Chrome
   block:

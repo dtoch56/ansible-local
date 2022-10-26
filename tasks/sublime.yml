@@ -1,3 +1,6 @@
+# Sublime Text - the sophisticated text editor for code, markup and prose
+# https://www.sublimetext.com/docs/linux_repositories.html
+---
 - name: sublime | Debian/Ubuntu
   block:
   - name: prerequisites

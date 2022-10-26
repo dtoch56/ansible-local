@@ -1,7 +1,6 @@
----
 # minikube - local Kubernetes, focusing on making it easy to learn and develop for Kubernetes.
 # https://minikube.sigs.k8s.io/docs/start/
-
+---
 - name: Minikube | Download minikube installation script
   get_url:
     url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
