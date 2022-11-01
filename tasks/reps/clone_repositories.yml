@@ -4,7 +4,7 @@
     repo: "{{ item | regex_search('(.+)', '\\1') | last }}"
     dest: "{{ root_directory }}/{{ grouped_repos.path }}/{{ item.split('/') | last | replace('.git', '') }}"
     accept_hostkey: yes
-    force: yes
-    recursive: clone_repositories_overwrite
+    force: "{{ clone_repositories_overwrite }}"
+    recursive: no
     key_file: ~/.ssh/id_ed25519
   with_items: "{{ grouped_repos.urls }}"
