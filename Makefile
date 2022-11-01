@@ -23,4 +23,6 @@ run-tag:
 	ansible-playbook main.yml --ask-become-pass --tags=$(A)
 
 update:
+	python -m ensurepip --upgrade
+	pip3 install pipenv
 	pipenv update && ./bin/update_deps.sh

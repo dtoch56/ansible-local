@@ -5,6 +5,6 @@
     dest: "{{ root_directory }}/{{ grouped_repos.path }}/{{ item.split('/') | last | replace('.git', '') }}"
     accept_hostkey: yes
     force: yes
-    recursive: no
+    recursive: clone_repositories_overwrite
     key_file: ~/.ssh/id_ed25519
   with_items: "{{ grouped_repos.urls }}"

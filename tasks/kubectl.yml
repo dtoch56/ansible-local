@@ -3,44 +3,46 @@
 ---
 - name: kubectl | Get latest stable release name
   ansible.builtin.shell: curl -L -s https://dl.k8s.io/release/stable.txt
-  register: stable_release
+  register: kubectl_stable_release
 
-- name: kubectl | Get checksum
-  ansible.builtin.uri:
-    url: "https://dl.k8s.io/{{ stable_release.stdout }}/bin/linux/amd64/kubectl.sha256"
-    return_content: yes
-    force: yes
-  register: checksum
-
-- name: "kubectl | Download the latest release {{ stable_release.stdout }}"
-  ansible.builtin.get_url:
-    url: "https://dl.k8s.io/release/{{ stable_release.stdout }}/bin/linux/amd64/kubectl"
-    dest: /tmp/kubectl
-    mode: '0700'
-    checksum: "sha256:{{ checksum.content }}"
-    force: yes
-
-- name: kubectl | Install kubectl
-  ansible.builtin.shell: install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
-  become: yes
-
-- name: kubectl | Test to ensure the version you installed is up-to-date
-  ansible.builtin.shell:
-    cmd: kubectl version --client --short
+- name: jx | Check current version
+  ansible.builtin.shell: /usr/local/bin/kubectl version --client=true -o json
+  ignore_errors: yes
   register: kubectl_version
 
-- ansible.builtin.debug:
-    msg: "{{ kubectl_version.stdout }}"
+- name: kubectl | Install block
+  block:
+  - name: kubectl | Get checksum
+    ansible.builtin.uri:
+      url: "https://dl.k8s.io/{{ kubectl_stable_release.stdout }}/bin/linux/amd64/kubectl.sha256"
+      return_content: yes
+      force: yes
+    register: checksum
 
-- name: kubectl | kubectl bash-completion
-  ansible.builtin.shell:
-    cmd: kubectl completion bash > /etc/bash_completion.d/kubectl
-  become: yes
+  - name: "kubectl | Download the latest release {{ kubectl_stable_release.stdout }}"
+    ansible.builtin.get_url:
+      url: "https://dl.k8s.io/release/{{ kubectl_stable_release.stdout }}/bin/linux/amd64/kubectl"
+      dest: /tmp/kubectl
+      mode: '0700'
+      checksum: "sha256:{{ checksum.content }}"
+      force: yes
 
-- name: kubectl | Remove kubectl installation file
-  ansible.builtin.file:
-    path: /tmp/kubectl
-    state: absent
+  - name: kubectl | Install kubectl
+    ansible.builtin.shell: install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+    become: yes
+
+  - name: kubectl | kubectl bash-completion
+    ansible.builtin.shell:
+      cmd: kubectl completion bash > /etc/bash_completion.d/kubectl
+    become: yes
+
+  - name: kubectl | Remove kubectl installation file
+    ansible.builtin.file:
+      path: /tmp/kubectl
+      state: absent
+  when:
+    - kubectl_version.rc > 0
+    - kubectl_stable_release.stdout !== (kubectl_version.stdout|from_json).clientVersion.gitVersion
 
 # kubecolor - Colorize your kubectl output
 - name: kubectl | Get latest release of kubecolor

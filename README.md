@@ -2,8 +2,19 @@
 
 Ansible playbook for initialization of tools and repositories for work.
 
-### What is this repository for? ###
+### What is this repository for? ##
 
+### Installation
+```bash
+sudo apt install make python3.10-venv
+python3 -m venv venv
+source venv/bin/activate
+python -m ensurepip --upgrade
+pip install pipenv
+make update
+```
+
+### Usage
 ```bash
 make run
 ```

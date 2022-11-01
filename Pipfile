@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 ansible = "*"
 "github3.py" = "*"
+"jmespath" = "*"
 
 [dev-packages]
 

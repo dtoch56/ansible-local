@@ -2,6 +2,11 @@
 # Manage your IDEs the easy way
 # https://www.jetbrains.com/toolbox-app/download/download-thanks.html?platform=linux
 ---
+- name: toolbox | Install pre-requisites
+  ansible.builtin.package:
+    name:
+      - libfuse2
+
 - name: toolbox | Get latest release
   ansible.builtin.uri:
     url: https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release
@@ -17,39 +22,49 @@
     return_content: yes
   register: toolbox_latest_release
 
-- name: toolbox | Get checksum
-  ansible.builtin.uri:
-    url: "{{ toolbox_latest_release.json.TBA[0].downloads.linux.checksumLink }}"
-    return_content: yes
-    force: yes
-  register: checksum
+- name: toolbox | Check current version
+  ansible.builtin.shell: /usr/local/bin/jetbrains-toolbox --version
+  ignore_errors: yes
+  register: toolbox_version
 
-- name: "toolbox | download {{ toolbox_latest_release.json.TBA[0].downloads.linux.link }}"
-  ansible.builtin.get_url:
-    url: "{{ toolbox_latest_release.json.TBA[0].downloads.linux.link }}"
-    checksum: "sha256:{{ checksum.content[:64] }}"
-    dest: /tmp/jetbrains-toolbox.tar.gz
-    force: yes
+- name: toolbox | Installation block
+  block:
+  - name: toolbox | Get checksum
+    ansible.builtin.uri:
+      url: "{{ toolbox_latest_release.json.TBA[0].downloads.linux.checksumLink }}"
+      return_content: yes
+      force: yes
+    register: checksum
 
-- name: toolbox | unarchive
-  ansible.builtin.unarchive:
-    src: /tmp/jetbrains-toolbox.tar.gz
-    dest: /tmp
+  - name: "toolbox | download {{ toolbox_latest_release.json.TBA[0].downloads.linux.link }}"
+    ansible.builtin.get_url:
+      url: "{{ toolbox_latest_release.json.TBA[0].downloads.linux.link }}"
+      checksum: "sha256:{{ checksum.content[:64] }}"
+      dest: /tmp/jetbrains-toolbox.tar.gz
+      force: yes
 
-- name: "/tmp/jetbrains-toolbox-{{ toolbox_latest_release.json.TBA[0].build }}/jetbrains-toolbox"
-  ansible.builtin.copy:
-    src: "/tmp/jetbrains-toolbox-{{ toolbox_latest_release.json.TBA[0].build }}/jetbrains-toolbox"
-    dest: /usr/local/bin/jetbrains-toolbox
-    mode: 0755
-    owner: "{{ ansible_user_id }}"
-  become: yes
+  - name: toolbox | unarchive
+    ansible.builtin.unarchive:
+      src: /tmp/jetbrains-toolbox.tar.gz
+      dest: /tmp
 
-- name: toolbox | Remove jetbrains-toolbox archive
-  ansible.builtin.file:
-    path: /tmp/jetbrains-toolbox.tar.gz
-    state: absent
+  - name: "/tmp/jetbrains-toolbox-{{ toolbox_latest_release.json.TBA[0].build }}/jetbrains-toolbox"
+    ansible.builtin.copy:
+      src: "/tmp/jetbrains-toolbox-{{ toolbox_latest_release.json.TBA[0].build }}/jetbrains-toolbox"
+      dest: /usr/local/bin/jetbrains-toolbox
+      mode: 0755
+      owner: "{{ ansible_user_id }}"
+    become: yes
 
-- name: toolbox | Remove jetbrains-toolbox archive
-  ansible.builtin.file:
-    path: "/tmp/jetbrains-toolbox-{{ toolbox_latest_release.json.TBA[0].build }}"
-    state: absent
+  - name: toolbox | Remove jetbrains-toolbox archive
+    ansible.builtin.file:
+      path: /tmp/jetbrains-toolbox.tar.gz
+      state: absent
+
+  - name: toolbox | Remove jetbrains-toolbox archive
+    ansible.builtin.file:
+      path: "/tmp/jetbrains-toolbox-{{ toolbox_latest_release.json.TBA[0].build }}"
+      state: absent
+  when:
+    - toolbox_version.rc > 0
+    - toolbox_latest_release.json.TBA[0].build not in toolbox_version.stdout

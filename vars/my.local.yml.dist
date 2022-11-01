@@ -1,0 +1,21 @@
+#reps:
+## Subdirectory name for projects to clone into
+#  - path: ""
+## List of urls to clone
+#    urls: []
+reps: []
+
+
+#additional_hosts:
+## ip-address
+#  - ip: ""
+# list of hosts
+#    hosts: []
+additional_hosts: []
+
+
+# List of aliases for shell
+- alias: ""
+  cmd: ""
+shell_aliases: []
+

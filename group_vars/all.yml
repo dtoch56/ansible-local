@@ -1,4 +1,5 @@
 root_directory: ~/projects
+clone_repositories_overwrite: no
 
 krew_plugins:
   # Manage cert-manager resources inside your cluster | https://github.com/jetstack/cert-manager | ★8k
@@ -40,6 +41,8 @@ minikube_addons:
   - metrics-server
   - storage-provisioner
 
+vscode_install_from_rep: True
+
 vscode_extensions:
   # VS Code Kubernetes Tools | https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools
   - ms-kubernetes-tools.vscode-kubernetes-tools
@@ -53,3 +56,24 @@ vscode_extensions:
   - golang.go
   # VS Code Makefile Tools | https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools
   - ms-vscode.makefile-tools
+
+# git repositories for cloning
+reps: []
+## Subdirectory name for projects to clone into
+#  - path: ""
+## List of urls to clone
+#    urls: []
+
+# Additional hosts to add to /etc/hosts
+additional_hosts: []
+## ip-address
+#  - ip: ""
+# list of hosts
+#    hosts: []
+
+# List of aliases for shell
+shell_aliases: []
+#  - alias: ""
+#    cmd: ""
+
+

@@ -1,6 +1,8 @@
 # minikube - local Kubernetes, focusing on making it easy to learn and develop for Kubernetes.
 # https://minikube.sigs.k8s.io/docs/start/
 ---
+- ansible.builtin.import_tasks: tasks/kvm.yml
+
 - name: Minikube | Download minikube installation script
   get_url:
     url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -22,6 +24,8 @@
 - name: Minikube | start minikube if it's not running.
   command: minikube start
   when: "not minikube_status.stdout or 'Running' not in minikube_status.stdout"
+  retries: 3
+  delay: 10
 
 - name: Minikube | Enable minikube addons
   ansible.builtin.shell: "minikube addons enable {{ item }}"

@@ -7,6 +7,11 @@
     action: latest_release
   register: latest_jx
 
+- name: jx | Check current version
+  ansible.builtin.shell: /usr/local/bin/jx version -s
+  ignore_errors: yes
+  register: jx_version
+
 - name: "jx | Installing jx {{ latest_jx.tag }}"
   ansible.builtin.unarchive:
     src: "https://github.com/jenkins-x/jx/releases/download/{{ latest_jx.tag }}/jx-linux-amd64.tar.gz"
@@ -15,4 +20,7 @@
     mode: 0755
     remote_src: yes
   become: yes
+  when:
+    - jx_version.rc > 0
+    - jx_version.stdout not in latest_jx.tag
 

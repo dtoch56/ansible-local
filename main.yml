@@ -2,15 +2,15 @@
 - name: All-in-one local installation playbook
   hosts: localhost
 
-  vars_files:
-    - vars/reps.yml
-
   tasks:
-    - name: Include all .yaml with variables
+    - name: Include all .yml with variables
       ansible.builtin.include_vars:
         dir: vars
+        depth: 1
+        ignore_unknown_extensions: yes
         extensions:
           - 'yml'
+      tags: [ always ]
 
     - name: Check if bash installed
       ansible.builtin.stat:
@@ -30,9 +30,17 @@
         zshrc: "{{ zshrc_file.stat.exists }}"
       tags: [ always ]
 
-#    - name: chrome
-#      import_tasks: tasks/chrome.yml
-#      tags: [ chrome ]
+    - name: Add shell aliases
+      import_tasks: tasks/shell_aliases.yml
+      tags: [ aliases ]
+
+    - name: Add custom hosts to /etc/hosts
+      import_tasks: tasks/hosts.yml
+      tags: [ hosts ]
+
+    - name: chrome
+      import_tasks: tasks/chrome.yml
+      tags: [ chrome ]
 
     - name: Configure PATH environment variable
       ansible.builtin.lineinfile:
@@ -45,9 +53,9 @@
       ansible.builtin.import_tasks: tasks/tools.yml
       tags: [ tools ]
 
-#    - name: Clone git repositories
-#      ansible.builtin.import_tasks: tasks/reps.yml
-#      tags: [ reps ]
+    - name: Clone git repositories
+      ansible.builtin.import_tasks: tasks/reps.yml
+      tags: [ reps ]
 
     - ansible.builtin.import_tasks: tasks/docker.yml
       tags: [ docker ]
@@ -56,34 +64,34 @@
     - ansible.builtin.import_tasks: tasks/toolbox.yml
       tags: [ toolbox ]
 
-#    - ansible.builtin.import_tasks: tasks/sublime.yml
-#      tags: [ sublime ]
+    - ansible.builtin.import_tasks: tasks/sublime.yml
+      tags: [ sublime ]
 
-#    - ansible.builtin.include: tasks/terraform.yml
+#    - ansible.builtin.import_tasks: tasks/terraform.yml
 #      tags: [ terraform ]
 #
-#    - ansible.builtin.include: tasks/packer.yml
+#    - ansible.builtin.import_tasks: tasks/packer.yml
 #      tags: [ packer ]
 
-    - ansible.builtin.include: tasks/terragrunt.yml
+    - ansible.builtin.import_tasks: tasks/terragrunt.yml
       tags: [ terragrunt ]
 
-    - ansible.builtin.include_tasks: tasks/kubectl.yml
+    - ansible.builtin.import_tasks: tasks/kubectl.yml
       tags: [ kubectl ]
 
-    - ansible.builtin.include_tasks: tasks/krew.yml
+    - ansible.builtin.import_tasks: tasks/krew.yml
       tags: [ krew ]
 
-    - ansible.builtin.include_tasks: tasks/yc.yml
+    - ansible.builtin.import_tasks: tasks/yc.yml
       tags: [ yc ]
 
-    - ansible.builtin.include_tasks: tasks/helm.yml
+    - ansible.builtin.import_tasks: tasks/helm.yml
       tags: [ helm ]
 
-    - ansible.builtin.include_tasks: tasks/minikube.yml
-      tags: [ minikube ]
+#    - ansible.builtin.import_tasks: tasks/minikube.yml
+#      tags: [ minikube ]
 
-    - ansible.builtin.include_tasks: tasks/jx.yml
+    - ansible.builtin.import_tasks: tasks/jx.yml
       tags: [ jx ]
 
     - ansible.builtin.import_tasks: tasks/direnv.yml
