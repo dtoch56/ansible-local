@@ -1,0 +1,9 @@
+---
+- include_tasks: setup-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include_tasks: setup-Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- include_tasks: reboot.yml
+  when: upgrade_packages_reboot_if_needed|bool == true and reboot_required|default(false)|bool == true

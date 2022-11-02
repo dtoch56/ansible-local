@@ -1,0 +1,4 @@
+---
+prepare_host_timezone: 'Europe/Moscow'
+prepare_host_locale: 'en_US.UTF-8'
+prepare_host_language: 'en_US.UTF-8'

@@ -15,6 +15,9 @@
     chdir: /tmp/
   become: yes
 
+- name: Minikube | Set KVM2 driver
+  ansible.builtin.shell: minikube config set driver kvm2
+
 - name: Minikube | check the status of minikube.
   command: minikube status
   register: minikube_status
@@ -22,7 +25,7 @@
   ignore_errors: true
 
 - name: Minikube | start minikube if it's not running.
-  command: minikube start
+  command: "minikube start --memory={{ minikube_memory }} --cpus={{ minikube_cpu }}"
   when: "not minikube_status.stdout or 'Running' not in minikube_status.stdout"
   retries: 3
   delay: 10

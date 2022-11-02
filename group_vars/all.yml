@@ -1,3 +1,5 @@
+default_editor: vim
+
 root_directory: ~/projects
 clone_repositories_overwrite: no
 
@@ -33,6 +35,9 @@ helm_plugins:
   # Monitor a release and rollback based on Prometheus/ElasticSearch query | ★360
   - name: monitor
     url: https://github.com/ContainerSolutions/helm-monitor
+
+minikube_memory: 8192
+minikube_cpu: 4
 
 minikube_addons:
   - dashboard

@@ -12,6 +12,20 @@
           - 'yml'
       tags: [ always ]
 
+    - name: upgrade packages
+      ansible.builtin.include_role:
+        name: dtoch56.upgrade_packages
+        apply:
+          become: true
+      tags: [ upgrade ]
+
+    - name: prepare host
+      ansible.builtin.include_role:
+        name: dtoch56.prepare_host
+        apply:
+          become: true
+      tags: [ host ]
+
     - name: Check if bash installed
       ansible.builtin.stat:
         path: ~/.bashrc
@@ -102,3 +116,6 @@
 
     - ansible.builtin.import_tasks: tasks/dive.yml
       tags: [ dive ]
+
+    - ansible.builtin.import_tasks: tasks/telegram.yml
+      tags: [ telegram ]

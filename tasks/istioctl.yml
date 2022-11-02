@@ -1,0 +1,6 @@
+# Istio command line tool (istioctl) use the command line interface (CLI) to manage your service mesh within the cluster.
+# https://istio.io/latest/docs/setup/getting-started/#download
+---
+- name: istioctl | Install
+  ansible.builtin.shell: curl -L https://istio.io/downloadIstio | sh -
+
