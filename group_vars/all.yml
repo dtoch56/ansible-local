@@ -46,6 +46,8 @@ minikube_addons:
   - metrics-server
   - storage-provisioner
 
+istio_dir: /opt/istio
+
 vscode_install_from_rep: True
 
 vscode_extensions:

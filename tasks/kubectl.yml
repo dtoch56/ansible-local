@@ -14,14 +14,14 @@
   block:
   - name: kubectl | Get checksum
     ansible.builtin.uri:
-      url: "https://dl.k8s.io/{{ kubectl_stable_release.stdout }}/bin/linux/amd64/kubectl.sha256"
+      url: "https://dl.k8s.io/{{ kubectl_stable_release.stdout }}/bin/linux/{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}/kubectl.sha256"
       return_content: yes
       force: yes
     register: checksum
 
   - name: "kubectl | Download the latest release {{ kubectl_stable_release.stdout }}"
     ansible.builtin.get_url:
-      url: "https://dl.k8s.io/release/{{ kubectl_stable_release.stdout }}/bin/linux/amd64/kubectl"
+      url: "https://dl.k8s.io/release/{{ kubectl_stable_release.stdout }}/bin/linux/{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}/kubectl"
       dest: /tmp/kubectl
       mode: '0700'
       checksum: "sha256:{{ checksum.content }}"
@@ -54,7 +54,7 @@
 
 - name: "kubectl | Installing kubecolor {{ latest_kubecolor.tag }}"
   ansible.builtin.unarchive:
-    src: "https://github.com/hidetatz/kubecolor/releases/download/{{ latest_kubecolor.tag }}/kubecolor_{{ latest_kubecolor.tag | replace('v','')  }}_Linux_x86_64.tar.gz"
+    src: "https://github.com/hidetatz/kubecolor/releases/download/{{ latest_kubecolor.tag }}/kubecolor_{{ latest_kubecolor.tag | replace('v','')  }}_Linux_{{ ansible_architecture }}.tar.gz"
     include: kubecolor
     dest: /usr/local/bin
     mode: 0755

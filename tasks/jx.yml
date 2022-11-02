@@ -14,7 +14,7 @@
 
 - name: "jx | Installing jx {{ latest_jx.tag }}"
   ansible.builtin.unarchive:
-    src: "https://github.com/jenkins-x/jx/releases/download/{{ latest_jx.tag }}/jx-linux-amd64.tar.gz"
+    src: "https://github.com/jenkins-x/jx/releases/download/{{ latest_jx.tag }}/jx-linux-{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}.tar.gz"
     include: jx
     dest: /usr/local/bin
     mode: 0755

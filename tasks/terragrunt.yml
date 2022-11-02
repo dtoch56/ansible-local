@@ -16,7 +16,7 @@
 
 - name: "terragrunt | Installing terragrunt {{ latest_terragrunt.tag }}"
   ansible.builtin.get_url:
-    url: "https://github.com/gruntwork-io/terragrunt/releases/download/{{ latest_terragrunt.tag }}/terragrunt_linux_amd64"
+    url: "https://github.com/gruntwork-io/terragrunt/releases/download/{{ latest_terragrunt.tag }}/terragrunt_linux_{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"
     dest: /usr/local/bin/terragrunt
     mode: '0755'
   become: yes

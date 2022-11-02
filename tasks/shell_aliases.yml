@@ -2,15 +2,15 @@
 - name: aliases | Add shell aliases
   ansible.builtin.lineinfile:
     path: ~/.bashrc
-    regexp: "^{{ item.alias }}="
-    line: "{{ item.alias }}=\"{{ item.cmd }}\""
+    regexp: "^alias {{ item.alias }}="
+    line: "alias {{ item.alias }}=\"{{ item.cmd }}\""
   when: bashrc
   with_items: "{{ shell_aliases }}"
 
 - name: aliases | Add shell aliases
   ansible.builtin.lineinfile:
     path: ~/.zshrc
-    regexp: "^{{ item.alias }}="
-    line: "{{ item.alias }}=\"{{ item.cmd }}\""
+    regexp: "^alias {{ item.alias }}="
+    line: "alias {{ item.alias }}=\"{{ item.cmd }}\""
   when: zshrc
   with_items: "{{ shell_aliases }}"
