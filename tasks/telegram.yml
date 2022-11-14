@@ -6,7 +6,6 @@
     dest: /tmp
     remote_src: true
     extra_opts: [--strip-components=1]
-  become: true
 
 - name: Telegram | copy
   ansible.builtin.copy:
@@ -14,6 +13,7 @@
     dest: /usr/local/bin/telegram
     mode: 0755
     force: true
+  become: true
 
 - name: Telegram | remove temp files
   ansible.builtin.file:
