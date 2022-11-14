@@ -1,4 +1,4 @@
-.PHONY: help venv run run-tag
+.PHONY: help venv run run-tag lint
 
 
 help:
@@ -9,6 +9,7 @@ help:
 	@echo '  run     Run main playbook'
 	@echo '  run-tag Run tag from main playbook'
 	@echo '  update  Update python dependencies and ansible roles'
+	@echo '  lint    Run lints'
 	@echo ''
 
 
@@ -26,3 +27,7 @@ update:
 	python -m ensurepip --upgrade
 	pip3 install pipenv
 	pipenv update && ./bin/update_deps.sh
+
+lint:
+	yamllint .
+	ansible-lint

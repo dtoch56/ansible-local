@@ -1,0 +1,10 @@
+---
+skip_list:
+  - 'package-latest'
+  - name[casing]
+  - name[template]
+  - command-instead-of-shell
+  - no-changed-when
+exclude_paths:
+  - .collections
+  - .roles

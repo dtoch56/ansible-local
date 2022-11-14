@@ -8,4 +8,7 @@
     - defaults/main.yml
 
   tasks:
-    - include_tasks: tasks/main.yml
+    - name: Include main task
+      ansible.builtin.include_tasks: tasks/main.yml
+      vars:
+        upgrade_packages_reboot_if_needed: false

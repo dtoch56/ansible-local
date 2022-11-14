@@ -1,8 +1,8 @@
----
 # packer - is a free and open source tool for creating golden images for multiple platforms from a single source configuration.
 # https://www.packer.io/docs
-
-- ansible.builtin.import_tasks: tasks/hashicorp.yml
+---
+- name: Packer | Package repositories
+  ansible.builtin.import_tasks: tasks/hashicorp.yml
 
 - name: Packer | Install packer
   ansible.builtin.package:
@@ -13,4 +13,4 @@
 - name: Packer | Enable Tab completion
   ansible.builtin.shell: packer -autocomplete-install
   # ignore when: "already installed"
-  ignore_errors: yes
+  ignore_errors: true

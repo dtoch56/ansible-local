@@ -1,5 +1,5 @@
 ---
-- name: tools | Install packages
+- name: Tools | Install packages
   ansible.builtin.package:
     name:
       - git
@@ -9,15 +9,15 @@
       - jq
       - htop
     state: latest
-  become: yes
+  become: true
 
-- name: tools | Set vim as the default editor
+- name: Tools | Set vim as the default editor
   ansible.builtin.lineinfile:
     path: ~/.bashrc
     line: "export EDITOR={{ default_editor }}"
   when: bashrc
 
-- name: tools | Set vim as the default editor
+- name: Tools | Set vim as the default editor
   ansible.builtin.lineinfile:
     path: ~/.zshrc
     line: "export EDITOR={{ default_editor }}"

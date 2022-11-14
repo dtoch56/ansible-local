@@ -1,6 +1,7 @@
-
 ---
 - name: HashiCorp | Ubuntu/Debian
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+  become: true
   block:
     - name: HashiCorp | prerequisites
       ansible.builtin.package:
@@ -24,11 +25,10 @@
       ansible.builtin.apt_repository:
         repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/hashicorp.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
         state: present
-  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
-  become: true
-
 
 - name: HashiCorp | CentOS/RHEL
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
+  become: true
   block:
     - name: HashiCorp | prerequisites
       ansible.builtin.package:
@@ -39,11 +39,10 @@
         name: hashicorp
         description: Hashicorp YUM repo
         baseurl: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
-  become: true
-
 
 - name: HashiCorp | Fedora
+  when: ansible_distribution == 'Fedora'
+  become: true
   block:
     - name: HashiCorp | prerequisites
       ansible.builtin.package:
@@ -55,11 +54,10 @@
         warn: false
       args:
         creates: /etc/yum.repos.d/hashicorp.repo
-  when: ansible_distribution == 'Fedora'
-  become: true
-
 
 - name: HashiCorp | Amazon Linux
+  when: ansible_distribution == 'Amazon'
+  become: true
   block:
     - name: HashiCorp | prerequisites
       ansible.builtin.package:
@@ -70,5 +68,3 @@
         name: hashicorp
         description: Hashicorp repo
         baseurl: https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
-  when: ansible_distribution == 'Amazon'
-  become: true

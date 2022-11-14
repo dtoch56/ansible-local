@@ -9,7 +9,7 @@
 
 - name: jx | Check current version
   ansible.builtin.shell: /usr/local/bin/jx version -s
-  ignore_errors: yes
+  ignore_errors: true
   register: jx_version
 
 - name: "jx | Installing jx {{ latest_jx.tag }}"
@@ -18,9 +18,8 @@
     include: jx
     dest: /usr/local/bin
     mode: 0755
-    remote_src: yes
-  become: yes
+    remote_src: true
+  become: true
   when:
     - jx_version.rc > 0
     - jx_version.stdout not in latest_jx.tag
-

@@ -2,7 +2,8 @@
 # terraform - is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services.
 # https://www.terraform.io/docs
 
-- ansible.builtin.import_tasks: tasks/hashicorp.yml
+- name: Terraform | Package repositories
+  ansible.builtin.import_tasks: tasks/hashicorp.yml
 
 - name: Terraform | Install terraform
   ansible.builtin.package:
@@ -13,4 +14,4 @@
 - name: Terraform | Enable Tab completion
   ansible.builtin.shell: terraform -install-autocomplete
   # ignore when: "already installed"
-  ignore_errors: yes
+  ignore_errors: true

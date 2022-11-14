@@ -7,118 +7,112 @@
       ansible.builtin.include_vars:
         dir: vars
         depth: 1
-        ignore_unknown_extensions: yes
+        ignore_unknown_extensions: true
         extensions:
           - 'yml'
-      tags: [ always ]
+      tags: [always]
 
-    - name: upgrade packages
-      ansible.builtin.include_role:
-        name: dtoch56.upgrade_packages
-        apply:
-          become: true
-      tags: [ upgrade ]
-
-    - name: prepare host
-      ansible.builtin.include_role:
-        name: dtoch56.prepare_host
-        apply:
-          become: true
-      tags: [ host ]
+    - name: Upgrade
+      ansible.builtin.import_tasks: tasks/upgrade.yml
+      become: true
+      tags: [upgrade]
 
     - name: Check if bash installed
       ansible.builtin.stat:
         path: ~/.bashrc
       register: bashrc_file
-      tags: [ always ]
+      tags: [always]
 
     - name: Check if zsh installed
       ansible.builtin.stat:
         path: ~/.zshrc
       register: zshrc_file
-      tags: [ always ]
-    
+      tags: [always]
+
     - name: Setting host facts using complex arguments
       ansible.builtin.set_fact:
         bashrc: "{{ bashrc_file.stat.exists }}"
         zshrc: "{{ zshrc_file.stat.exists }}"
-      tags: [ always ]
+      tags: [always]
 
     - name: Add shell aliases
-      import_tasks: tasks/shell_aliases.yml
-      tags: [ aliases ]
+      ansible.builtin.import_tasks: tasks/shell_aliases.yml
+      tags: [aliases]
 
     - name: Add custom hosts to /etc/hosts
-      import_tasks: tasks/hosts.yml
-      tags: [ hosts ]
+      ansible.builtin.import_tasks: tasks/hosts.yml
+      tags: [hosts]
 
     - name: chrome
-      import_tasks: tasks/chrome.yml
-      tags: [ chrome ]
+      ansible.builtin.import_tasks: tasks/chrome.yml
+      tags: [chrome]
 
     - name: Configure PATH environment variable
       ansible.builtin.lineinfile:
         path: ~/.zshrc
         line: 'export PATH=$HOME/bin:/usr/local/bin:$PATH'
       when: zshrc
-      tags: [ always ]
+      tags: [always]
 
     - name: Install linux tools
       ansible.builtin.import_tasks: tasks/tools.yml
-      tags: [ tools ]
+      tags: [tools]
 
     - name: Clone git repositories
       ansible.builtin.import_tasks: tasks/reps.yml
-      tags: [ reps ]
+      tags: [reps]
 
-    - ansible.builtin.import_tasks: tasks/docker.yml
-      tags: [ docker ]
+    - name: Docker
+      ansible.builtin.import_tasks: tasks/docker.yml
+      tags: [docker]
       become: true
 
-    - ansible.builtin.import_tasks: tasks/toolbox.yml
-      tags: [ toolbox ]
+    - name: JetBrains Toolbox App
+      ansible.builtin.import_tasks: tasks/toolbox.yml
+      tags: [toolbox]
 
-    - ansible.builtin.import_tasks: tasks/sublime.yml
-      tags: [ sublime ]
+    - name: Sublime Text
+      ansible.builtin.import_tasks: tasks/sublime.yml
+      tags: [sublime]
 
 #    - ansible.builtin.import_tasks: tasks/terraform.yml
-#      tags: [ terraform ]
+#      tags: [terraform]
 #
 #    - ansible.builtin.import_tasks: tasks/packer.yml
-#      tags: [ packer ]
+#      tags: [packer]
 
     - ansible.builtin.import_tasks: tasks/terragrunt.yml
-      tags: [ terragrunt ]
+      tags: [terragrunt]
 
     - ansible.builtin.import_tasks: tasks/kubectl.yml
-      tags: [ kubectl ]
+      tags: [kubectl]
 
     - ansible.builtin.import_tasks: tasks/krew.yml
-      tags: [ krew ]
+      tags: [krew]
 
     - ansible.builtin.import_tasks: tasks/yc.yml
-      tags: [ yc ]
+      tags: [yc]
 
     - ansible.builtin.import_tasks: tasks/helm.yml
-      tags: [ helm ]
+      tags: [helm]
 
 #    - ansible.builtin.import_tasks: tasks/minikube.yml
-#      tags: [ minikube ]
+#      tags: [minikube]
 
     - ansible.builtin.import_tasks: tasks/jx.yml
-      tags: [ jx ]
+      tags: [jx]
 
     - ansible.builtin.import_tasks: tasks/istioctl.yml
-      tags: [ istioctl ]
+      tags: [istioctl]
 
     - ansible.builtin.import_tasks: tasks/direnv.yml
-      tags: [ direnv ]
+      tags: [direnv]
 
     - ansible.builtin.import_tasks: tasks/vscode.yml
-      tags: [ vscode ]
+      tags: [vscode]
 
     - ansible.builtin.import_tasks: tasks/dive.yml
-      tags: [ dive ]
+      tags: [dive]
 
     - ansible.builtin.import_tasks: tasks/telegram.yml
-      tags: [ telegram ]
+      tags: [telegram]

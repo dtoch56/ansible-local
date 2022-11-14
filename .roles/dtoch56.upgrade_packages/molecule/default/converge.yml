@@ -5,3 +5,4 @@
 
   roles:
     - role: "dtoch56.upgrade_packages"
+      upgrade_packages_reboot_if_needed: false

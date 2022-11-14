@@ -1,4 +1,44 @@
 ---
-prepare_host_timezone: 'Europe/Moscow'
-prepare_host_locale: 'en_US.UTF-8'
-prepare_host_language: 'en_US.UTF-8'
+locale_lang: en_US.UTF-8
+locale_language: "{{ locale_lang }}"
+locale_lc_address: "{{ locale_lang }}"
+locale_lc_all: "{{ locale_lang }}"
+locale_lc_collate: "{{ locale_lang }}"
+locale_lc_ctype: "{{ locale_lang }}"
+locale_lc_identification: "{{ locale_lang }}"
+locale_lc_measurement: "{{ locale_lang }}"
+locale_lc_messages: "{{ locale_lang }}"
+locale_lc_monetary: "{{ locale_lang }}"
+locale_lc_name: "{{ locale_lang }}"
+locale_lc_numeric: "{{ locale_lang }}"
+locale_lc_paper: "{{ locale_lang }}"
+locale_lc_response: "{{ locale_lang }}"
+locale_lc_telephone: "{{ locale_lang }}"
+locale_lc_time: "{{ locale_lang }}"
+
+ntp_enabled: true
+ntp_timezone: Etc/UTC
+
+# ntp_daemon: [various]
+# ntp_package: ntp
+# ntp_config_file: /etc/ntp.conf
+# ntp_driftfile: [various]
+
+ntp_manage_config: false
+
+# NTP server area configuration (leave empty for 'Worldwide').
+# See: http://support.ntp.org/bin/view/Servers/NTPPoolServers
+ntp_area: ''
+ntp_servers:
+  - "0{{ '.' + ntp_area if ntp_area else '' }}.pool.ntp.org iburst"
+  - "1{{ '.' + ntp_area if ntp_area else '' }}.pool.ntp.org iburst"
+  - "2{{ '.' + ntp_area if ntp_area else '' }}.pool.ntp.org iburst"
+  - "3{{ '.' + ntp_area if ntp_area else '' }}.pool.ntp.org iburst"
+
+ntp_restrict:
+  - "127.0.0.1"
+  - "::1"
+
+ntp_cron_handler_enabled: false
+
+ntp_tinker_panic: false

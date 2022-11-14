@@ -3,5 +3,9 @@
   hosts: all
   become: true
 
+  vars:
+    ntp_enabled: false
+    ntp_manage_config: true
+
   roles:
     - role: "dtoch56.prepare_host"

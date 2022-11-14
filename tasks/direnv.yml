@@ -7,7 +7,7 @@
   ansible.builtin.shell: curl -sfL https://direnv.net/install.sh | bash
   environment:
     bin_path: /usr/local/bin
-  become: yes
+  become: true
 
 - name: direnv | hook direnv into your bash shell
   ansible.builtin.lineinfile:

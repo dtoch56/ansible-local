@@ -1,0 +1,39 @@
+---
+- name: Update apt repositories
+  ansible.builtin.apt:
+    update_cache: true
+    force_apt_get: true
+    cache_valid_time: 86400
+
+- name: Install prerequisites
+  ansible.builtin.package:
+    name:
+      - locales
+    state: latest
+
+- name: "Ensure localisation files for {{ prepare_host_locale }} are available"
+  community.general.locale_gen:
+    name: "{{ prepare_host_locale }}"
+    state: present
+
+- name: "Ensure localisation files for {{ prepare_host_language }} are available"
+  community.general.locale_gen:
+    name: "{{ prepare_host_language }}"
+    state: present
+
+- name: Get current locale and language configuration
+  ansible.builtin.command: localectl status
+  register: locale_status
+  changed_when: false
+
+- name: Parse 'LANG' from current locale and language configuration
+  ansible.builtin.set_fact:
+    locale_lang: "{{ locale_status.stdout | regex_search('LANG=([^\n]+)', '\\1') | default([''], true) | first }}"
+
+- name: Parse 'LANGUAGE' from current locale and language configuration
+  ansible.builtin.set_fact:
+    locale_language: "{{ locale_status.stdout | regex_search('LANGUAGE=([^\n]+)', '\\1') | default([locale_lang], true) | first }}"
+
+- name: "Configure locale to {{ prepare_host_locale }} and language to {{ prepare_host_language }}"
+  ansible.builtin.command: localectl set-locale LANG={{ prepare_host_locale }} LANGUAGE={{ prepare_host_language }}
+  changed_when: locale_lang != prepare_host_locale or locale_language != prepare_host_language

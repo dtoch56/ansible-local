@@ -6,7 +6,7 @@
     name:
       - openssl
     state: present
-  become: yes
+  become: true
 
 - name: helm | Install Helm
   ansible.builtin.shell: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
@@ -24,8 +24,8 @@
 
 - name: helm | helm bash-completion
   ansible.builtin.shell:
-    cmd: helm completion bash > /etc/bash_completion.d/helm 
-  become: yes
+    cmd: helm completion bash > /etc/bash_completion.d/helm
+  become: true
   when: bashrc
 
 - name: helm | zsh completion for helm

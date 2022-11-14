@@ -2,47 +2,47 @@
 # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 ---
 - name: kubectl | Get latest stable release name
-  ansible.builtin.shell: curl -L -s https://dl.k8s.io/release/stable.txt
-  register: kubectl_stable_release
+  ansible.builtin.set_fact:
+    kubectl_stable_release: "{{ lookup('ansible.builtin.url', 'https://dl.k8s.io/release/stable.txt') }}"
 
 - name: jx | Check current version
   ansible.builtin.shell: /usr/local/bin/kubectl version --client=true -o json
-  ignore_errors: yes
+  ignore_errors: true
   register: kubectl_version
 
 - name: kubectl | Install block
-  block:
-  - name: kubectl | Get checksum
-    ansible.builtin.uri:
-      url: "https://dl.k8s.io/{{ kubectl_stable_release.stdout }}/bin/linux/{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}/kubectl.sha256"
-      return_content: yes
-      force: yes
-    register: checksum
-
-  - name: "kubectl | Download the latest release {{ kubectl_stable_release.stdout }}"
-    ansible.builtin.get_url:
-      url: "https://dl.k8s.io/release/{{ kubectl_stable_release.stdout }}/bin/linux/{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}/kubectl"
-      dest: /tmp/kubectl
-      mode: '0700'
-      checksum: "sha256:{{ checksum.content }}"
-      force: yes
-
-  - name: kubectl | Install kubectl
-    ansible.builtin.shell: install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
-    become: yes
-
-  - name: kubectl | kubectl bash-completion
-    ansible.builtin.shell:
-      cmd: kubectl completion bash > /etc/bash_completion.d/kubectl
-    become: yes
-
-  - name: kubectl | Remove kubectl installation file
-    ansible.builtin.file:
-      path: /tmp/kubectl
-      state: absent
   when:
     - kubectl_version.rc > 0
-    - kubectl_stable_release.stdout !== (kubectl_version.stdout|from_json).clientVersion.gitVersion
+    - kubectl_stable_release !== (kubectl_version.stdout|from_json).clientVersion.gitVersion
+  block:
+    - name: kubectl | Get checksum
+      ansible.builtin.uri:
+        url: "https://dl.k8s.io/{{ kubectl_stable_release }}/bin/linux/{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}/kubectl.sha256"
+        return_content: true
+        force: true
+      register: checksum
+
+    - name: "kubectl | Download the latest release {{ kubectl_stable_release }}"
+      ansible.builtin.get_url:
+        url: "https://dl.k8s.io/release/{{ kubectl_stable_release }}/bin/linux/{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}/kubectl"
+        dest: /tmp/kubectl
+        mode: '0700'
+        checksum: "sha256:{{ checksum.content }}"
+        force: true
+
+    - name: kubectl | Install kubectl
+      ansible.builtin.shell: install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+      become: true
+
+    - name: kubectl | kubectl bash-completion
+      ansible.builtin.shell:
+        cmd: kubectl completion bash > /etc/bash_completion.d/kubectl
+      become: true
+
+    - name: kubectl | Remove kubectl installation file
+      ansible.builtin.file:
+        path: /tmp/kubectl
+        state: absent
 
 # kubecolor - Colorize your kubectl output
 - name: kubectl | Get latest release of kubecolor
@@ -54,46 +54,40 @@
 
 - name: "kubectl | Installing kubecolor {{ latest_kubecolor.tag }}"
   ansible.builtin.unarchive:
-    src: "https://github.com/hidetatz/kubecolor/releases/download/{{ latest_kubecolor.tag }}/kubecolor_{{ latest_kubecolor.tag | replace('v','')  }}_Linux_{{ ansible_architecture }}.tar.gz"
+    src: "https://github.com/hidetatz/kubecolor/releases/download/{{ latest_kubecolor.tag }}/kubecolor_{{ latest_kubecolor.tag | replace('v', '') }}_Linux_{{ ansible_architecture }}.tar.gz"
     include: kubecolor
     dest: /usr/local/bin
     mode: 0755
-    remote_src: yes
-  become: yes
-
-
-
+    remote_src: true
+  become: true
 
 - name: kubectl | bash aliases and completion
-  block:
-  - name: kubectl | bash alias for kubecolor
-    ansible.builtin.lineinfile:
-      path: ~/.bashrc
-      line: alias k=kubecolor
-
-  - name: kubectl | bash completion for alias of kubecolor
-    ansible.builtin.lineinfile:
-      path: ~/.bashrc
-      line: complete -o bashdefault -o default -o nospace -F __start_kubectl k
   when: bashrc
+  block:
+    - name: kubectl | bash alias for kubecolor
+      ansible.builtin.lineinfile:
+        path: ~/.bashrc
+        line: alias k=kubecolor
 
-
-
+    - name: kubectl | bash completion for alias of kubecolor
+      ansible.builtin.lineinfile:
+        path: ~/.bashrc
+        line: complete -o bashdefault -o default -o nospace -F __start_kubectl k
 
 - name: kubectl | zsh aliases and completion
-  block:
-  - name: kubectl | zsh alias for kubecolor
-    ansible.builtin.lineinfile:
-      path: ~/.zshrc
-      line: alias k=kubecolor
-
-  - name: kubectl | zsh completion for alias of kubecolor
-    ansible.builtin.lineinfile:
-      path: ~/.zshrc
-      line: source <(kubectl completion zsh)
-
-  # - name: kubectl | bash completion for alias of kubecolor
-  #   ansible.builtin.lineinfile:
-  #     path: ~/.bashrc
-  #     line: complete -o bashdefault -o default -o nospace -F __start_kubectl k
   when: zshrc
+  block:
+    - name: kubectl | zsh alias for kubecolor
+      ansible.builtin.lineinfile:
+        path: ~/.zshrc
+        line: alias k=kubecolor
+
+    - name: kubectl | zsh completion for alias of kubecolor
+      ansible.builtin.lineinfile:
+        path: ~/.zshrc
+        line: source <(kubectl completion zsh)
+
+#     - name: kubectl | bash completion for alias of kubecolor
+#       ansible.builtin.lineinfile:
+#         path: ~/.bashrc
+#         line: complete -o bashdefault -o default -o nospace -F __start_kubectl k

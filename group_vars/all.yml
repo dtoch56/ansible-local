@@ -1,7 +1,11 @@
+---
 default_editor: vim
 
 root_directory: ~/projects
-clone_repositories_overwrite: no
+clone_repositories_overwrite: false
+
+# kubectl version to install (omit if latest)
+# kubectl_required_version: 1.25.3
 
 krew_plugins:
   # Manage cert-manager resources inside your cluster | https://github.com/jetstack/cert-manager | ★8k
@@ -25,6 +29,8 @@ krew_plugins:
   # Show a tree of object hierarchies through ownerReferences | https://github.com/ahmetb/kubectl-tree | ★1.9k
   - tree
 
+# Helm version to install (omit if latest)
+# helm_required_version: 3.10.1
 helm_plugins:
   # Show a diff explaing what a helm upgrade and helm rollback would change | ★1.3k
   - name: diff
@@ -36,6 +42,8 @@ helm_plugins:
   - name: monitor
     url: https://github.com/ContainerSolutions/helm-monitor
 
+# Minikube version to install (omit if latest)
+# minikube_required_version: 1.27.1
 minikube_memory: 8192
 minikube_cpu: 4
 
@@ -46,9 +54,11 @@ minikube_addons:
   - metrics-server
   - storage-provisioner
 
+# istioctl version to install (omit if latest)
+# istio_required_version: 1.15.3
 istio_dir: /opt/istio
 
-vscode_install_from_rep: True
+vscode_install_from_rep: true
 
 vscode_extensions:
   # VS Code Kubernetes Tools | https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools
@@ -63,6 +73,9 @@ vscode_extensions:
   - golang.go
   # VS Code Makefile Tools | https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools
   - ms-vscode.makefile-tools
+
+# YandexCloud CLI version to install (omit if latest)
+# yc_required_version: 0.90.0
 
 # git repositories for cloning
 reps: []
@@ -82,5 +95,3 @@ additional_hosts: []
 shell_aliases: []
 #  - alias: ""
 #    cmd: ""
-
-

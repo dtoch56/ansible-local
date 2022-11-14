@@ -5,8 +5,10 @@ name = "pypi"
 
 [packages]
 ansible = "*"
+ansible-lint = "*"
 "github3.py" = "*"
-"jmespath" = "*"
+jmespath = "*"
+yamllint = "*"
 
 [dev-packages]
 

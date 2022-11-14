@@ -1,10 +1,13 @@
 ---
-# This is an example playbook to execute Ansible tests.
-
 - name: Verify
   hosts: all
-  gather_facts: false
+
+  vars:
+    host_timezone: "{{ lookup('file','/etc/timezone') }}"
+  vars_files:
+    - ../../defaults/main.yml
+
   tasks:
-  - name: Example assertion
-    assert:
-      that: true
+    - name: Test host timezone
+      ansible.builtin.assert:
+        that: ntp_timezone == host_timezone

@@ -1,0 +1,18 @@
+---
+- name: Restart ntp
+  ansible.builtin.service:
+    name: "{{ ntp_daemon }}"
+    state: restarted
+  when: ntp_enabled | bool
+
+- name: Restart cron
+  ansible.builtin.service:
+    name: "{{ ntp_cron_daemon }}"
+    state: restarted
+  when: ntp_cron_handler_enabled | bool
+
+- name: Localectl set-locale
+  ansible.builtin.command:
+    cmd: "{{ locale_notify_command }}"
+  when:
+    - ansible_connection not in [ "container", "docker", "community.docker.docker" ]

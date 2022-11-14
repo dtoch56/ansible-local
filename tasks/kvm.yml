@@ -24,7 +24,7 @@
       # A set of tools for creating and managing bridge devices.
       - bridge-utils
     state: latest
-  become: yes
+  become: true
 
 - name: kvm | kvm-ok
   ansible.builtin.shell: kvm-ok

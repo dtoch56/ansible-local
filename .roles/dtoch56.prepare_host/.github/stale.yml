@@ -1,5 +1,5 @@
 # Configuration for probot-stale - https://github.com/probot/stale
-
+---
 # Number of days of inactivity before an Issue or Pull Request becomes stale
 daysUntilStale: 90
 
@@ -12,6 +12,7 @@ onlyLabels: []
 
 # Issues or Pull Requests with these labels will never be considered stale. Set to `[]` to disable
 exemptLabels:
+  - bug
   - pinned
   - security
   - planned
@@ -34,19 +35,14 @@ limitPerRun: 30
 pulls:
   markComment: |-
     This pull request has been marked 'stale' due to lack of recent activity. If there is no further activity, the PR will be closed in another 30 days. Thank you for your contribution!
-
   unmarkComment: >-
     This pull request is no longer marked for closure.
-
   closeComment: >-
     This pull request has been closed due to inactivity. If you feel this is in error, please reopen the pull request or file a new PR with the relevant details.
-
 issues:
   markComment: |-
     This issue has been marked 'stale' due to lack of recent activity. If there is no further activity, the issue will be closed in another 30 days. Thank you for your contribution!
-
   unmarkComment: >-
     This issue is no longer marked for closure.
-
   closeComment: >-
     This issue has been closed due to inactivity. If you feel this is in error, please reopen the issue or file a new issue with the relevant details.

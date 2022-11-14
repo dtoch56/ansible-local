@@ -1,0 +1,12 @@
+---
+- name: Upgrade | upgrade_packages
+  ansible.builtin.include_role:
+    name: dtoch56.upgrade_packages
+
+- name: Upgrade | prepare_host
+  ansible.builtin.include_role:
+    name: dtoch56.prepare_host
+  vars:
+    pip_install_packages:
+      - docker
+      - docker-compose

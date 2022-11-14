@@ -1,0 +1,25 @@
+---
+- name: Import assert.yml
+  ansible.builtin.import_tasks: assert.yml
+  run_once: true
+  delegate_to: localhost
+
+- name: Update apt repositories
+  ansible.builtin.apt:
+    update_cache: true
+    force_apt_get: true
+    cache_valid_time: 86400
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Install requirements
+  ansible.builtin.package:
+    name: "{{ locale_requirements }}"
+    state: present
+
+- name: Configure locale.conf
+  ansible.builtin.template:
+    src: locale.conf.j2
+    dest: "{{ locale_configuration_file }}"
+    mode: "0644"
+  notify:
+    - Localectl set-locale

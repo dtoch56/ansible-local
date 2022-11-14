@@ -1,9 +1,6 @@
 # Istio command line tool (istioctl) use the command line interface (CLI) to manage your service mesh within the cluster.
 # https://istio.io/latest/docs/setup/getting-started/#download
 ---
-#- name: istioctl | Install
-#  ansible.builtin.shell: curl -L https://istio.io/downloadIstio | sh -
-
 - name: istioctl | Get latest release of istioctl
   community.general.github_release:
     user: istio
@@ -13,33 +10,31 @@
 
 - name: istio | Check current version
   ansible.builtin.shell: istioctl version --short --remote=false
-  ignore_errors: yes
+  ignore_errors: true
   register: istioctl_version
 
 - name: istio | installation block
-  block:
-
-  - name:
-    ansible.builtin.file:
-      path: "{{ istio_dir }}"
-      state: directory
-      mode: '0755'
-
-  - name: "istio | Installing istio {{ latest_istio.tag }}"
-    ansible.builtin.unarchive:
-      src: "https://github.com/istio/istio/releases/download/{{ latest_istio.tag }}/istio-{{ latest_istio.tag }}-linux-{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}.tar.gz"
-      dest: "{{ istio_dir }}"
-      mode: '0755'
-      remote_src: yes
-
-  - name: istio | copy binary
-    ansible.builtin.copy:
-      src: "{{ istio_dir }}/istio-{{ latest_istio.tag }}/bin/istioctl"
-      dest: /usr/local/bin/istioctl
-      mode: 0755
-      force: yes
-
-  become: yes
+  become: true
   when:
     - istioctl_version.rc > 0
     - latest_istio.tag not in istioctl_version.stdout
+  block:
+    - name: istion | Create istio directory
+      ansible.builtin.file:
+        path: "{{ istio_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: "istio | Installing istio {{ latest_istio.tag }}"
+      ansible.builtin.unarchive:
+        src: "https://github.com/istio/istio/releases/download/{{ latest_istio.tag }}/istio-{{ latest_istio.tag }}-linux-{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}.tar.gz"
+        dest: "{{ istio_dir }}"
+        mode: '0755'
+        remote_src: true
+
+    - name: istio | copy binary
+      ansible.builtin.copy:
+        src: "{{ istio_dir }}/istio-{{ latest_istio.tag }}/bin/istioctl"
+        dest: /usr/local/bin/istioctl
+        mode: 0755
+        force: true

@@ -2,24 +2,24 @@
 # working with multiple Terraform modules, and managing remote state.
 # https://terragrunt.gruntwork.io/docs/getting-started/install/
 ---
-- name: terragrunt | Get latest release of terragrunt
+- name: Terragrunt | Get latest release of terragrunt
   community.general.github_release:
     user: gruntwork-io
     repo: terragrunt
     action: latest_release
   register: latest_terragrunt
 
-- name: terragrunt | Check current version
+- name: Terragrunt | Check current version
   ansible.builtin.shell: /usr/local/bin/terragrunt --version
-  ignore_errors: yes
+  ignore_errors: true
   register: terragrunt_version
 
-- name: "terragrunt | Installing terragrunt {{ latest_terragrunt.tag }}"
+- name: "Terragrunt | Installing terragrunt {{ latest_terragrunt.tag }}"
   ansible.builtin.get_url:
     url: "https://github.com/gruntwork-io/terragrunt/releases/download/{{ latest_terragrunt.tag }}/terragrunt_linux_{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"
     dest: /usr/local/bin/terragrunt
     mode: '0755'
-  become: yes
   when:
     - terragrunt_version.rc > 0
     - latest_terragrunt.tag not in terragrunt_version.stdout
+  become: true

@@ -1,7 +1,7 @@
 # Clone git-repositories from list
 ---
-- name: reps | Loop over repos
-  include_tasks: tasks/reps/clone_repositories.yml
+- name: Reps | Loop over repos
+  ansible.builtin.include_tasks: tasks/reps/clone_repositories.yml
   with_items: '{{ reps }}'
   loop_control:
      loop_var: grouped_repos

@@ -1,9 +1,10 @@
+---
 galaxy_info:
   author: dtoch56
   role_name: prepare_host
   description: Host locale and tmezone configuration
   license: MIT
-  min_ansible_version: 2.1
+  min_ansible_version: '2.1'
   platforms:
     - name: EL
       versions:
@@ -18,7 +19,8 @@ galaxy_info:
       versions:
         - all
   galaxy_tags:
-    - prepare_host
+    - prepare
+    - host
     - locale
     - language
     - timezone

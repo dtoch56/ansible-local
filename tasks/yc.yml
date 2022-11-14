@@ -1,18 +1,52 @@
----
 # yc - The Yandex.Cloud command-line interface (CLI) provides downloadable software for managing your cloud resources from the command line.
 # https://cloud.yandex.com/en-ru/docs/cli/quickstart#install
+---
+- name: Yandex Cloud CLI | Check current version
+  ansible.builtin.shell: yc version --semantic
+  register: yc_version
+  changed_when: false
+  failed_when:
+    - yc_version.rc != 0
+    - '"yc: not found" not in yc_version.stderr'
 
-- name: yc | Download yc installation script
-  ansible.builtin.get_url:
-    url: https://storage.yandexcloud.net/yandexcloud-yc/install.sh
-    dest: /tmp/install_yc.sh
-    mode: '0700'
-    force: yes
+- name: Yandex Cloud CLI | Set variables
+  ansible.builtin.set_fact:
+    yc_current_version: "{{ yc_version.stdout }}"
 
-- name: yc | Install yc
-  ansible.builtin.shell: /tmp/install_yc.sh
 
-- name: yc | Remove yc installation file
-  ansible.builtin.file:
-    path: /tmp/install_yc.sh
-    state: absent
+- name: Yandex Cloud CLI | Get latest release
+  ansible.builtin.uri:
+    url: https://storage.yandexcloud.net/yandexcloud-yc/release/stable
+    return_content: true
+  register: yc_latest_release
+  when: yc_required_version is not defined
+
+- name: Yandex Cloud CLI | Set variables
+  ansible.builtin.set_fact:
+    yc_required_version: "{{ yc_latest_release.content | trim }}"
+  when: yc_latest_release is not skipped
+
+
+- name: "Yandex Cloud CLI | Installation block"
+  when: yc_required_version != yc_current_version
+  block:
+    - name: Yandex Cloud CLI
+      ansible.builtin.debug:
+        msg: "Installing {{ yc_required_version }} over {{ yc_current_version }}"
+
+    - name: Yandex Cloud CLI | Download yc installation script
+      ansible.builtin.get_url:
+        url: https://storage.yandexcloud.net/yandexcloud-yc/install.sh
+        dest: /tmp/install_yc.sh
+        mode: '0700'
+        force: true
+
+    - name: Yandex Cloud CLI | Install yc
+      ansible.builtin.shell: /tmp/install_yc.sh
+      environment:
+        - YC_VERSION: "{{ yc_required_version }}"
+
+    - name: Yandex Cloud CLI | Remove yc installation file
+      ansible.builtin.file:
+        path: /tmp/install_yc.sh
+        state: absent

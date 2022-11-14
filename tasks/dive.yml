@@ -8,30 +8,23 @@
     action: latest_release
   register: latest_dive
 
-- debug:
-    var: latest_dive.tag
-
 - name: dive | Check current version
   ansible.builtin.shell: /usr/local/bin/dive version
-  ignore_errors: yes
+  ignore_errors: true
   register: dive_version
 
-
 - name: dive | Install block
-  block:
-  - name: "dive | Installing dive {{ latest_dive.tag }}"
-    ansible.builtin.apt:
-      deb:  "https://github.com/wagoodman/dive/releases/download/{{ latest_dive.tag }}/dive_{{ latest_dive.tag | regex_replace('^v', '')}}_linux_amd64.deb"
-    become: yes
-    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-  - name: "dive | Installing dive {{ latest_dive.tag }}"
-    ansible.builtin.yum:
-      deb:  "https://github.com/wagoodman/dive/releases/download/{{ latest_dive.tag }}/dive_{{ latest_dive.tag | regex_replace('^v', '')}}_linux_amd64.rpm"
-    become: yes
-    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
   when:
     - dive_version.rc > 0
     - dive_version.stdout | replace('dive ','v') !== latest_dive.tag
+  become: true
+  block:
+    - name: "dive | Installing dive {{ latest_dive.tag }}"
+      ansible.builtin.apt:
+        deb: "https://github.com/wagoodman/dive/releases/download/{{ latest_dive.tag }}/dive_{{ latest_dive.tag | regex_replace('^v', '') }}_linux_amd64.deb"
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-
+    - name: "dive | Installing dive {{ latest_dive.tag }}"
+      ansible.builtin.yum:
+        deb: "https://github.com/wagoodman/dive/releases/download/{{ latest_dive.tag }}/dive_{{ latest_dive.tag | regex_replace('^v', '') }}_linux_amd64.rpm"
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
