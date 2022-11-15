@@ -1,4 +1,6 @@
 ---
+ntp_timezone: Europe/Moscow
+
 default_editor: vim
 
 root_directory: ~/projects
