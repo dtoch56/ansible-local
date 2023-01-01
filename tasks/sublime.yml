@@ -20,7 +20,7 @@
   - name: Sublime | Add repository
     ansible.builtin.apt_repository:
       repo: deb https://download.sublimetext.com/ apt/stable/
-      filename: sublime-text.list
+      filename: sublime
       state: present
     become: true
 

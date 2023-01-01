@@ -1,0 +1,21 @@
+# K9s - Kubernetes CLI To Manage Your Clusters In Style!
+# https://k9scli.io/
+# https://github.com/derailed/k9s
+---
+- name: k9s | Install k9s
+  ansible.builtin.shell: curl -sS https://webinstall.dev/k9s | bash
+  environment:
+    bin_path: /usr/local/bin
+  become: true
+
+- name: k9s | bash uses 256 colors terminal mode
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: TERM=xterm-256color
+  when: bashrc
+
+- name: k9s | zsh uses 256 colors terminal mode
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    line: TERM=xterm-256color
+  when: zshrc

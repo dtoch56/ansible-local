@@ -16,15 +16,16 @@
         dest: /etc/apt/keyrings/hashicorp.gpg
         mode: '0644'
         force: true
-# Key is stored in legacy trusted.gpg keyring
-#    - name: HashiCorp | add repository keys
-#      ansible.builtin.apt_key:
-#        url: https://apt.releases.hashicorp.com/gpg
-#        state: present
+    # Key is stored in legacy trusted.gpg keyring
+    #    - name: HashiCorp | add repository keys
+    #      ansible.builtin.apt_key:
+    #        url: https://apt.releases.hashicorp.com/gpg
+    #        state: present
     - name: HashiCorp | add repository
       ansible.builtin.apt_repository:
         repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/hashicorp.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
         state: present
+        filename: hashicorp
 
 - name: HashiCorp | CentOS/RHEL
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'

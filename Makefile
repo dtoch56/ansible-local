@@ -31,3 +31,9 @@ update:
 lint:
 	yamllint .
 	ansible-lint
+	molecule lint
+	molecule syntax
+
+test:
+	molecule test
+

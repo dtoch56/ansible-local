@@ -8,6 +8,8 @@ ansible = "*"
 ansible-lint = "*"
 "github3.py" = "*"
 jmespath = "*"
+molecule = "*"
+molecule-docker = "*"
 yamllint = "*"
 
 [dev-packages]

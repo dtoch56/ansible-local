@@ -75,44 +75,59 @@
       ansible.builtin.import_tasks: tasks/sublime.yml
       tags: [sublime]
 
-#    - ansible.builtin.import_tasks: tasks/terraform.yml
-#      tags: [terraform]
-#
-#    - ansible.builtin.import_tasks: tasks/packer.yml
-#      tags: [packer]
+    # - ansible.builtin.import_tasks: tasks/terraform.yml
+    #  tags: [terraform]
 
-    - ansible.builtin.import_tasks: tasks/terragrunt.yml
+    # - ansible.builtin.import_tasks: tasks/packer.yml
+    #  tags: [packer]
+
+    - name: terragrunt
+      ansible.builtin.import_tasks: tasks/terragrunt.yml
       tags: [terragrunt]
 
-    - ansible.builtin.import_tasks: tasks/kubectl.yml
+    - name: kubectl
+      ansible.builtin.import_tasks: tasks/kubectl.yml
       tags: [kubectl]
 
-    - ansible.builtin.import_tasks: tasks/krew.yml
+    - name: k9s
+      ansible.builtin.import_tasks: tasks/k9s.yml
+      tags: [k9s]
+
+    - name: krew
+      ansible.builtin.import_tasks: tasks/krew.yml
       tags: [krew]
 
-    - ansible.builtin.import_tasks: tasks/yc.yml
+    - name: YandexCloud
+      ansible.builtin.import_tasks: tasks/yc.yml
       tags: [yc]
 
-    - ansible.builtin.import_tasks: tasks/helm.yml
+    - name: helm
+      ansible.builtin.import_tasks: tasks/helm.yml
       tags: [helm]
 
-#    - ansible.builtin.import_tasks: tasks/minikube.yml
-#      tags: [minikube]
+    # - ansible.builtin.import_tasks: tasks/minikube.yml
+    #  tags: [minikube]
 
-    - ansible.builtin.import_tasks: tasks/jx.yml
+    - name: JenkinsX
+      ansible.builtin.import_tasks: tasks/jx.yml
       tags: [jx]
 
-    - ansible.builtin.import_tasks: tasks/istioctl.yml
+    - name: isio ctl
+      ansible.builtin.import_tasks: tasks/istioctl.yml
       tags: [istioctl]
 
-    - ansible.builtin.import_tasks: tasks/direnv.yml
+    - name: direnv
+      ansible.builtin.import_tasks: tasks/direnv.yml
       tags: [direnv]
 
-    - ansible.builtin.import_tasks: tasks/vscode.yml
+    - name: VSCode
+      ansible.builtin.import_tasks: tasks/vscode.yml
       tags: [vscode]
 
-    - ansible.builtin.import_tasks: tasks/dive.yml
+    - name: Dive
+      ansible.builtin.import_tasks: tasks/dive.yml
       tags: [dive]
 
-    - ansible.builtin.import_tasks: tasks/telegram.yml
+    - name: Telegram
+      ansible.builtin.import_tasks: tasks/telegram.yml
       tags: [telegram]
