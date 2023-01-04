@@ -56,6 +56,9 @@ minikube_addons:
   - metrics-server
   - storage-provisioner
 
+
+# dive_required_version: 0.10.0
+
 # istioctl version to install (omit if latest)
 # istio_required_version: 1.15.3
 istio_dir: /opt/istio

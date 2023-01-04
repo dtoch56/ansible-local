@@ -1,30 +1,41 @@
 # Dive is a tool for exploring a docker image, layer contents, and discovering ways to shrink the size of your Docker/OCI image.
 # https://github.com/wagoodman/dive
 ---
-- name: dive | Get latest release of dive
-  community.general.github_release:
-    user: wagoodman
-    repo: dive
-    action: latest_release
-  register: latest_dive
+- name: dive | Check required version
+  when: dive_required_version is not defined
+  block:
+    - name: dive | Get latest release
+      community.general.github_release:
+        user: wagoodman
+        repo: dive
+        action: latest_release
+      register: dive_latest_release
 
-- name: dive | Check current version
+    - name: dive | Set required version
+      ansible.builtin.set_fact:
+        dive_required_version: "{{ dive_latest_release.tag | regex_replace('^v', '') }}"
+
+- name: kubectl | Check current version
   ansible.builtin.shell: /usr/local/bin/dive version
-  ignore_errors: true
-  register: dive_version
+  register: dive_current_version
+  failed_when:
+    - dive_current_version.rc != 0
+    - '"dive: not found" not in dive_current_version.stderr'
 
 - name: dive | Install block
   when:
-    - dive_version.rc > 0
-    - dive_version.stdout | replace('dive ','v') !== latest_dive.tag
+    - dive_required_version != (dive_current_version | replace('dive ','v'))
   become: true
   block:
-    - name: "dive | Installing dive {{ latest_dive.tag }}"
+    - name: "dive | Installing dive {{ dive_required_version }}"
       ansible.builtin.apt:
-        deb: "https://github.com/wagoodman/dive/releases/download/{{ latest_dive.tag }}/dive_{{ latest_dive.tag | regex_replace('^v', '') }}_linux_amd64.deb"
+        deb: "https://github.com/wagoodman/dive/releases/download/v{{ dive_required_version }}/dive_{{ dive_required_version }}_linux_amd64.deb"
+        allow_downgrade: yes
       when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-    - name: "dive | Installing dive {{ latest_dive.tag }}"
+    - name: "dive | Installing dive {{ dive_required_version }}"
       ansible.builtin.yum:
-        deb: "https://github.com/wagoodman/dive/releases/download/{{ latest_dive.tag }}/dive_{{ latest_dive.tag | regex_replace('^v', '') }}_linux_amd64.rpm"
+        name: "https://github.com/wagoodman/dive/releases/download/v{{ dive_required_version }}/dive_{{ dive_required_version }}_linux_amd64.rpm"
+        allow_downgrade: true
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
+

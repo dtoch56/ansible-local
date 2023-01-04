@@ -75,11 +75,11 @@
       ansible.builtin.import_tasks: tasks/sublime.yml
       tags: [sublime]
 
-    # - ansible.builtin.import_tasks: tasks/terraform.yml
-    #  tags: [terraform]
+    - ansible.builtin.import_tasks: tasks/terraform.yml
+      tags: [terraform]
 
-    # - ansible.builtin.import_tasks: tasks/packer.yml
-    #  tags: [packer]
+    - ansible.builtin.import_tasks: tasks/packer.yml
+      tags: [packer]
 
     - name: terragrunt
       ansible.builtin.import_tasks: tasks/terragrunt.yml

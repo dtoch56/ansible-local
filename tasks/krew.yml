@@ -19,8 +19,13 @@
 # - name: krew | Check the installation
 #  ansible.builtin.shell: kubectl krew
 
+- name: source bashrc
+  ansible.builtin.shell: ". ~/.bashrc && kubectl krew install {{ item }}"
+  with_items: "{{ krew_plugins }}"
+
+
 # ToDo: Find out the way to restart shell
 # error: unknown command "krew" for "kubectl"
-- name: krew | Install Krew plugins
-  ansible.builtin.shell: "kubectl krew install {{ item }}"
-  with_items: "{{ krew_plugins }}"
+#- name: krew | Install Krew plugins
+#  ansible.builtin.shell: "kubectl krew install {{ item }}"
+#  with_items: "{{ krew_plugins }}"

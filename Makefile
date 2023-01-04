@@ -10,12 +10,11 @@ help:
 	@echo '  run-tag Run tag from main playbook'
 	@echo '  update  Update python dependencies and ansible roles'
 	@echo '  lint    Run lints'
+	@echo '  test    Run tests'
 	@echo ''
-
 
 venv:
 	python3 -m venv venv
-	source venv/bin/activate
 
 run:
 	ansible-playbook main.yml --ask-become-pass $(A)

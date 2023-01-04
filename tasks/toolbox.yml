@@ -6,6 +6,7 @@
   ansible.builtin.package:
     name:
       - libfuse2
+  become: true
 
 - name: Toolbox | Get latest release
   ansible.builtin.uri:
