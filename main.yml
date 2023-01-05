@@ -12,10 +12,16 @@
           - 'yml'
       tags: [always]
 
+    - name: Disable ntp for WSL
+      ansible.builtin.set_fact:
+        prepare_host_ntp: false
+      when: "'WSL' in ansible_kernel"
+
     - name: Upgrade
       ansible.builtin.import_tasks: tasks/upgrade.yml
       become: true
       tags: [upgrade]
+      when: "'upgrade' not in ignore_tags"
 
     - name: Check if bash installed
       ansible.builtin.stat:
@@ -38,14 +44,19 @@
     - name: Add shell aliases
       ansible.builtin.import_tasks: tasks/shell_aliases.yml
       tags: [aliases]
+      when: "'aliases' not in ignore_tags"
 
     - name: Add custom hosts to /etc/hosts
       ansible.builtin.import_tasks: tasks/hosts.yml
       tags: [hosts]
+      when: "'hosts' not in ignore_tags"
 
     - name: chrome
       ansible.builtin.import_tasks: tasks/chrome.yml
       tags: [chrome]
+      when:
+        - "'chrome' not in ignore_tags"
+        - "'WSL' not in ansible_kernel"
 
     - name: Configure PATH environment variable
       ansible.builtin.lineinfile:
@@ -57,77 +68,106 @@
     - name: Install linux tools
       ansible.builtin.import_tasks: tasks/tools.yml
       tags: [tools]
+      when: "'tools' not in ignore_tags"
 
     - name: Clone git repositories
       ansible.builtin.import_tasks: tasks/reps.yml
       tags: [reps]
+      when: "'reps' not in ignore_tags"
 
     - name: Docker
       ansible.builtin.import_tasks: tasks/docker.yml
-      tags: [docker]
       become: true
+      tags: [docker]
+      when: "'docker' not in ignore_tags"
 
     - name: JetBrains Toolbox App
       ansible.builtin.import_tasks: tasks/toolbox.yml
       tags: [toolbox]
+      when:
+        - "'toolbox' not in ignore_tags"
+        - "'WSL' not in ansible_kernel"
 
     - name: Sublime Text
       ansible.builtin.import_tasks: tasks/sublime.yml
       tags: [sublime]
+      when:
+        - "'sublime' not in ignore_tags"
+        - "'WSL' not in ansible_kernel"
 
     - ansible.builtin.import_tasks: tasks/terraform.yml
       tags: [terraform]
+      when: "'terraform' not in ignore_tags"
 
     - ansible.builtin.import_tasks: tasks/packer.yml
       tags: [packer]
+      when: "'packer' not in ignore_tags"
 
     - name: terragrunt
       ansible.builtin.import_tasks: tasks/terragrunt.yml
       tags: [terragrunt]
+      when: "'terragrunt' not in ignore_tags"
 
     - name: kubectl
       ansible.builtin.import_tasks: tasks/kubectl.yml
       tags: [kubectl]
+      when: "'kubectl' not in ignore_tags"
 
     - name: k9s
       ansible.builtin.import_tasks: tasks/k9s.yml
       tags: [k9s]
+      when: "'k9s' not in ignore_tags"
 
     - name: krew
       ansible.builtin.import_tasks: tasks/krew.yml
       tags: [krew]
+      when: "'krew' not in ignore_tags"
 
     - name: YandexCloud
       ansible.builtin.import_tasks: tasks/yc.yml
       tags: [yc]
+      when: "'yc' not in ignore_tags"
 
     - name: helm
       ansible.builtin.import_tasks: tasks/helm.yml
       tags: [helm]
+      when: "'helm' not in ignore_tags"
 
-    # - ansible.builtin.import_tasks: tasks/minikube.yml
-    #  tags: [minikube]
+    - ansible.builtin.import_tasks: tasks/minikube.yml
+      tags: [minikube]
+      when: "'minikube' not in ignore_tags"
 
     - name: JenkinsX
       ansible.builtin.import_tasks: tasks/jx.yml
       tags: [jx]
+      when: "'jx' not in ignore_tags"
 
     - name: isio ctl
       ansible.builtin.import_tasks: tasks/istioctl.yml
       tags: [istioctl]
+      when: "'istioctl' not in ignore_tags"
 
     - name: direnv
       ansible.builtin.import_tasks: tasks/direnv.yml
       tags: [direnv]
+      when: "'direnv' not in ignore_tags"
 
     - name: VSCode
       ansible.builtin.import_tasks: tasks/vscode.yml
       tags: [vscode]
+      when:
+        - "'vscode' not in ignore_tags"
+        - "'WSL' not in ansible_kernel"
 
     - name: Dive
       ansible.builtin.import_tasks: tasks/dive.yml
       tags: [dive]
+      when: "'dive' not in ignore_tags"
 
     - name: Telegram
       ansible.builtin.import_tasks: tasks/telegram.yml
       tags: [telegram]
+      when:
+        - "'telegram' not in ignore_tags"
+        - "'WSL' not in ansible_kernel"
+

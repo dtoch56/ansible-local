@@ -36,3 +36,6 @@ lint:
 test:
 	molecule test
 
+get-facts:
+	ansible localhost -m ansible.builtin.setup > facts.json
+	sed -i 's/localhost | SUCCESS => //g' facts.json

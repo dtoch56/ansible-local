@@ -10,3 +10,4 @@ venv
 Thumbs.db
 
 /vars/*.local.yml
+facts.json
