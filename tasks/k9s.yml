@@ -3,10 +3,9 @@
 # https://github.com/derailed/k9s
 ---
 - name: k9s | Install k9s
-  ansible.builtin.shell: curl -sS https://webinstall.dev/k9s | bash
+  ansible.builtin.shell: curl -sS https://webi.sh/k9s | bash
   environment:
     bin_path: /usr/local/bin
-  become: true
 
 - name: k9s | bash uses 256 colors terminal mode
   ansible.builtin.lineinfile:
