@@ -164,6 +164,11 @@
       tags: [dive]
       when: "'dive' not in ignore_tags"
 
+    - name: Task
+      ansible.builtin.import_tasks: tasks/task.yml
+      tags: [task]
+      when: "'task' not in ignore_tags"
+
     - name: Telegram
       ansible.builtin.import_tasks: tasks/telegram.yml
       tags: [telegram]

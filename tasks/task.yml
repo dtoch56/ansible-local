@@ -1,0 +1,107 @@
+# task - a task runner / build tool that aims to be simpler and easier to use than, for example, GNU Make
+# https://taskfile.dev/
+# https://github.com/go-task/task
+---
+- name: task | Check current version
+  ansible.builtin.shell: /usr/local/bin/task --version
+  register: task_version
+  changed_when: false
+  failed_when:
+    - task_version.rc != 0
+    - '"task: not found" not in task_version.stderr'
+
+- name: task | Set task_current_version variables
+  ansible.builtin.set_fact:
+    task_current_version: "{{ task_version.stdout | regex_search(' (v[0-9]+.[0-9]+.[0-9]+) ', '\\1') | first if task_version.stdout | length > 0 else '' }}"
+
+
+- name: task | Get latest release
+  community.general.github_release:
+    user: go-task
+    repo: task
+    action: latest_release
+  register: task_latest_release
+  when: task_required_version is not defined
+
+- name: task | Set task_required_version variables
+  ansible.builtin.set_fact:
+    task_required_version: "{{ task_latest_release.tag | trim }}"
+  when: task_latest_release is not skipped
+
+
+- name: task | Install block
+  when:
+    - task_required_version != task_current_version
+  block:
+    - name: task | Get checksum
+      ansible.builtin.uri:
+        url: "https://github.com/go-task/task/releases/download/{{ task_required_version }}/task_checksums.txt"
+        return_content: true
+        force: true
+      register: checksum
+
+    - set_fact:
+        task_checksums: "{{ task_checksums|d({})|combine({_key: _val}) }}"
+      loop: "{{ checksum.content | split('\n') }}"
+      when: item|length > 0
+      vars:
+        _key: "{{ item.split('  ')[1]|trim }}"
+        _val: "{{ item.split('  ')[0]|trim }}"
+
+    - name: task | set task_filename
+      ansible.builtin.set_fact:
+        task_filename: task_linux_{{ arch_map[ansible_architecture] }}.tar.gz
+
+    - name: "task | Download task {{ task_required_version }}"
+      ansible.builtin.get_url:
+        url: "https://github.com/go-task/task/releases/download/{{ task_required_version }}/{{ task_filename }}"
+        dest: /tmp/task.tar.gz
+        mode: 0644
+        checksum: "sha256:{{ task_checksums[task_filename] }}"
+        force: true
+
+    - name: task | Remove task tmp folder
+      ansible.builtin.file:
+        path: "/tmp/task"
+        state: absent
+
+    - name: task | Remove task tmp folder
+      ansible.builtin.file:
+        path: "/tmp/task"
+        state: directory
+
+    - name: task | unarchive
+      ansible.builtin.unarchive:
+        src: /tmp/task.tar.gz
+        dest: /tmp/task
+
+    - name: task | copy binary
+      ansible.builtin.copy:
+        src: "/tmp/task/task"
+        dest: /usr/local/bin/task
+        mode: 0755
+        owner: "{{ ansible_user_id }}"
+      become: true
+
+    - name: task | bash-completion
+      ansible.builtin.copy:
+        src: /tmp/task/completion/bash/task.bash
+        dest: /etc/bash_completion.d/task
+      become: true
+      when: bashrc
+
+#    - name: task | zsh completion for helm
+#      ansible.builtin.lineinfile:
+#        src: /tmp/task/completion/zsh/_task
+#        dest:
+#      when: zshrc
+
+    - name: task | Remove task archive
+      ansible.builtin.file:
+        path: /tmp/task.tar.gz
+        state: absent
+
+    - name: task | Remove task tmp folder
+      ansible.builtin.file:
+        path: "/tmp/task"
+        state: absent

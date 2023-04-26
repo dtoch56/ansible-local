@@ -2,19 +2,119 @@
 # https://k9scli.io/
 # https://github.com/derailed/k9s
 ---
-- name: k9s | Install k9s
-  ansible.builtin.shell: curl -sS https://webi.sh/k9s | bash
-  environment:
-    bin_path: /usr/local/bin
+- name: k9s | Check current version
+  ansible.builtin.shell: /usr/local/bin/k9s version --short
+  register: k9s_version
+  changed_when: false
+  failed_when:
+    - k9s_version.rc != 0
+    - '"k9s: not found" not in k9s_version.stderr'
 
-- name: k9s | bash uses 256 colors terminal mode
-  ansible.builtin.lineinfile:
-    path: ~/.bashrc
-    line: TERM=xterm-256color
-  when: bashrc
+- name: k9s | Set k9s_current_version variables
+  ansible.builtin.set_fact:
+    k9s_current_version: "{{ k9s_version.stdout | regex_search(' (v[0-9]+.[0-9]+.[0-9]+)', '\\1') | first if k9s_version.stdout | length > 0 else '' }}"
 
-- name: k9s | zsh uses 256 colors terminal mode
-  ansible.builtin.lineinfile:
-    path: ~/.zshrc
-    line: TERM=xterm-256color
-  when: zshrc
+- debug:
+    var: k9s_current_version
+
+- name: k9s | Get latest release
+  community.general.github_release:
+    user: derailed
+    repo: k9s
+    action: latest_release
+  register: k9s_latest_release
+  when: k9s_required_version is not defined
+
+- name: k9s | Set k9s_required_version variables
+  ansible.builtin.set_fact:
+    k9s_required_version: "{{ k9s_latest_release.tag | trim }}"
+  when: k9s_latest_release is not skipped
+
+
+- name: k9s | Install block
+  when:
+    - k9s_required_version != k9s_current_version
+  block:
+    - name: k9s | Get checksum
+      ansible.builtin.uri:
+        url: "https://github.com/derailed/k9s/releases/download/{{ k9s_required_version }}/checksums.txt"
+        return_content: true
+        force: true
+      register: checksum
+
+    - set_fact:
+        k9s_checksums: "{{ k9s_checksums|d({})|combine({_key: _val}) }}"
+      loop: "{{ checksum.content | split('\n') }}"
+      when: item|length > 0
+      vars:
+        _key: "{{ item.split('  ')[1]|trim }}"
+        _val: "{{ item.split('  ')[0]|trim }}"
+
+    - name: k9s | set k9s_filename
+      ansible.builtin.set_fact:
+        k9s_filename: k9s_Linux_{{ arch_map[ansible_architecture] }}.tar.gz
+
+    - name: "k9s | Download k9s {{ k9s_required_version }}"
+      ansible.builtin.get_url:
+        url: "https://github.com/derailed/k9s/releases/download/{{ k9s_required_version }}/{{ k9s_filename }}"
+        dest: /tmp/k9s.tar.gz
+        mode: 0644
+        checksum: "sha256:{{ k9s_checksums[k9s_filename] }}"
+        force: true
+
+    - name: k9s | Remove k9s tmp folder
+      ansible.builtin.file:
+        path: "/tmp/k9s"
+        state: absent
+
+    - name: k9s | Remove k9s tmp folder
+      ansible.builtin.file:
+        path: "/tmp/k9s"
+        state: directory
+
+    - name: k9s | unarchive
+      ansible.builtin.unarchive:
+        src: /tmp/k9s.tar.gz
+        dest: /tmp/k9s
+
+    - name: k9s | copy binary
+      ansible.builtin.copy:
+        src: "/tmp/k9s/k9s"
+        dest: /usr/local/bin/k9s
+        mode: 0755
+        owner: "{{ ansible_user_id }}"
+      become: true
+
+    - name: k9s | Remove k9s archive
+      ansible.builtin.file:
+        path: /tmp/k9s.tar.gz
+        state: absent
+
+    - name: k9s | Remove k9s tmp folder
+      ansible.builtin.file:
+        path: "/tmp/k9s"
+        state: absent
+
+    - name: k9s | bash uses 256 colors terminal mode
+      ansible.builtin.lineinfile:
+        path: ~/.bashrc
+        line: TERM=xterm-256color
+      when: bashrc
+
+    - name: k9s | zsh uses 256 colors terminal mode
+      ansible.builtin.lineinfile:
+        path: ~/.zshrc
+        line: TERM=xterm-256color
+      when: zshrc
+
+    - name: k9s | k9s bash-completion
+      ansible.builtin.shell:
+        cmd: k9s completion bash > /etc/bash_completion.d/minikube
+      become: true
+      when: bashrc
+
+    - name: k9s | zsh completion for k9s
+      ansible.builtin.lineinfile:
+        path: ~/.zshrc
+        line: source <(k9s completion zsh)
+      when: zshrc

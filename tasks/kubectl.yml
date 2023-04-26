@@ -35,7 +35,7 @@
         force: true
       register: checksum
 
-    - name: "kubectl | Download the latest release {{ kubectl_stable_release }}"
+    - name: "kubectl | Download release {{ kubectl_required_version }}"
       ansible.builtin.get_url:
         url: "https://dl.k8s.io/release/{{ kubectl_required_version }}/bin/linux/{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}/kubectl"
         dest: /tmp/kubectl

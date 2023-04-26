@@ -58,6 +58,7 @@ minikube_addons:
   - metrics-server
   - storage-provisioner
 
+# task_required_version: 3.20.0
 
 # dive_required_version: 0.10.0
 
