@@ -30,6 +30,7 @@ ignore_tags: []
   # - toolbox
   # - sublime
   # - terraform
+  # - task
   # - packer
   # - terragrunt
   # - kubectl
