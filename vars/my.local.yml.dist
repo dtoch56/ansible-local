@@ -8,8 +8,9 @@ reps: []
 
 
 #additional_hosts:
-## ip-address
-##  - ip: ""
+## - ip: ""
+##   hosts:
+##     - ""
 additional_hosts: []
 
 
