@@ -14,9 +14,6 @@
   ansible.builtin.set_fact:
     k9s_current_version: "{{ k9s_version.stdout | regex_search(' (v[0-9]+.[0-9]+.[0-9]+)', '\\1') | first if k9s_version.stdout | length > 0 else '' }}"
 
-- debug:
-    var: k9s_current_version
-
 - name: k9s | Get latest release
   community.general.github_release:
     user: derailed
@@ -35,14 +32,14 @@
   when:
     - k9s_required_version != k9s_current_version
   block:
-    - name: k9s | Get checksum
+    - name: task | Get checksum
       ansible.builtin.uri:
         url: "https://github.com/derailed/k9s/releases/download/{{ k9s_required_version }}/checksums.sha256"
         return_content: true
         force: true
       register: checksum
-        # ToDo: add old checkfum file format support (checksum.txt)
-    - name: k9s | Get checksum
+
+    - name: k9s | Get checksum old format
       ansible.builtin.uri:
         url: "https://github.com/derailed/k9s/releases/download/{{ k9s_required_version }}/checksums.txt"
         return_content: true
@@ -103,26 +100,26 @@
         path: "/tmp/k9s"
         state: absent
 
-    - name: k9s | bash uses 256 colors terminal mode
-      ansible.builtin.lineinfile:
-        path: ~/.bashrc
-        line: TERM=xterm-256color
-      when: bashrc
+- name: k9s | bash uses 256 colors terminal mode
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: TERM=xterm-256color
+  when: bashrc
 
-    - name: k9s | zsh uses 256 colors terminal mode
-      ansible.builtin.lineinfile:
-        path: ~/.zshrc
-        line: TERM=xterm-256color
-      when: zshrc
+- name: k9s | zsh uses 256 colors terminal mode
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    line: TERM=xterm-256color
+  when: zshrc
 
-    - name: k9s | k9s bash-completion
-      ansible.builtin.shell:
-        cmd: k9s completion bash > /etc/bash_completion.d/minikube
-      become: true
-      when: bashrc
+- name: k9s | k9s bash-completion
+  ansible.builtin.shell:
+    cmd: k9s completion bash > /etc/bash_completion.d/k9s
+  become: true
+  when: bashrc
 
-    - name: k9s | zsh completion for k9s
-      ansible.builtin.lineinfile:
-        path: ~/.zshrc
-        line: source <(k9s completion zsh)
-      when: zshrc
+- name: k9s | zsh completion for k9s
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    line: source <(k9s completion zsh)
+  when: zshrc

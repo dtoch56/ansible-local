@@ -6,11 +6,8 @@ Ansible playbook for initialization of tools and repositories for work.
 
 ### Installation
 ```bash
-sudo apt install make python3.10-venv
-python3 -m venv venv
-source venv/bin/activate
-python -m ensurepip --upgrade
-pip install pipenv
+make venv
+source .venv/bin/activate
 make update
 ```
 
@@ -21,6 +18,10 @@ make run
 
 ```bash
 make run A='--tags toolbox'
+```
+
+```bash
+make run-tag A='k9s'
 ```
 
 ## Available tags

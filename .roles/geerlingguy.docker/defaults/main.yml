@@ -8,6 +8,13 @@ docker_packages:
   - "containerd.io"
   - docker-buildx-plugin
 docker_packages_state: present
+docker_obsolete_packages:
+  - docker
+  - docker.io
+  - docker-engine
+  - podman-docker
+  - containerd
+  - runc
 
 # Service options.
 docker_service_manage: true
