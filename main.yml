@@ -176,3 +176,9 @@
         - "'telegram' not in ignore_tags"
         - "'WSL' not in ansible_kernel"
 
+    - name: Harbor
+      ansible.builtin.import_tasks: tasks/harbor.yml
+      tags: [harbor]
+      when:
+        - "'harbor' not in ignore_tags"
+

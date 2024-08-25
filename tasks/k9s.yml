@@ -37,10 +37,18 @@
   block:
     - name: k9s | Get checksum
       ansible.builtin.uri:
+        url: "https://github.com/derailed/k9s/releases/download/{{ k9s_required_version }}/checksums.sha256"
+        return_content: true
+        force: true
+      register: checksum
+        # ToDo: add old checkfum file format support (checksum.txt)
+    - name: k9s | Get checksum
+      ansible.builtin.uri:
         url: "https://github.com/derailed/k9s/releases/download/{{ k9s_required_version }}/checksums.txt"
         return_content: true
         force: true
       register: checksum
+      when: checksum is not defined
 
     - set_fact:
         k9s_checksums: "{{ k9s_checksums|d({})|combine({_key: _val}) }}"

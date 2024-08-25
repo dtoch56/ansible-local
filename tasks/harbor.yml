@@ -1,0 +1,48 @@
+# Istio command line tool (istioctl) use the command line interface (CLI) to manage your service mesh within the cluster.
+# https://istio.io/latest/docs/setup/getting-started/#download
+---
+- name: harbor | Get latest release of Harbor
+  community.general.github_release:
+    user: goharbor
+    repo: harbor
+    action: latest_release
+  register: latest_harbor
+
+#- name: harbor | Check current version
+#  ansible.builtin.shell: harbor version --short --remote=false
+#  ignore_errors: true
+#  register: harbor_version
+
+- name: harbor | installation block
+#  become: true
+#  when:
+#    - harbor_version.rc > 0
+#    - latest_harbor.tag not in harbor_version.stdout
+  block:
+#    - name: harbor | Create harbor tmp directory
+#      ansible.builtin.file:
+#        path: /tmp/harbor
+#        state: directory
+#        mode: '0755'
+#    - name: harbor | Obtain the public key for the *.asc file.
+#      ansible.builtin.apt_key:
+#        keyserver: keyserver.ubuntu.com
+#        id: 644FF454C0B4115C
+
+#    - name: "harbor | Download an OpenPGP key file to verify that the package is genuine."
+#      ansible.builtin.get_url:
+#        src: "https://github.com/goharbor/harbor/releases/download/{{ latest_harbor.tag }}/harbor-online-installer-{{ latest_harbor.tag }}.tgz.asc"
+#        dest: /tmp/harbor
+#        mode: '0755'
+#        remote_src: true
+#
+#    - name: harbor | Verify that the package is genuine
+#      ansible.builtin.command: "gpg -v --keyserver hkps://keyserver.ubuntu.com --verify /tmp/harbor/harbor-online-installer-{{ latest_harbor.tag }}.tgz.asc"
+
+    - name: "harbor | Download Harbor {{ latest_harbor.tag }}"
+      ansible.builtin.unarchive:
+        src: "https://github.com/goharbor/harbor/releases/download/{{ latest_harbor.tag }}/harbor-online-installer-{{ latest_harbor.tag }}.tgz"
+        dest: /tmp
+        mode: '0755'
+        remote_src: true
+

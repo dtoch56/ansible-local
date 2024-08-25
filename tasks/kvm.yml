@@ -32,3 +32,13 @@
   failed_when:
     - kvm_ok_result.rc == 0
     - "'KVM acceleration can be used' not in kvm_ok_result.stdout"
+
+- name: kvm | add user to groups
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups:
+      - kvm
+      - libvirt
+    append: true
+  become: true
+
