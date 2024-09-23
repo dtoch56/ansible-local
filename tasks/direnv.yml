@@ -10,13 +10,39 @@
   become: true
 
 - name: direnv | hook direnv into your bash shell
-  ansible.builtin.lineinfile:
-    path: ~/.bashrc
-    line: eval "$(direnv hook bash)"
   when: bashrc
+  block:
+    - ansible.builtin.lineinfile:
+        path: ~/.bashrc
+        line: eval "$(direnv hook bash)"
+
+    - ansible.builtin.blockinfile:
+        path: ~/.bashrc
+        block: |
+          show_virtual_env() {
+            if [[ -n "$VIRTUAL_ENV" && -n "$DIRENV_DIR" ]]; then
+              echo "($(basename $VIRTUAL_ENV))"
+            fi
+          }
+          export -f show_virtual_env
+          PS1='$(show_virtual_env)'$PS1 
+
 
 - name: direnv | hook direnv into your zsh shell
-  ansible.builtin.lineinfile:
-    path: ~/.zshrc
-    line: eval "$(direnv hook zsh)"
   when: zshrc
+  block:
+    - ansible.builtin.lineinfile:
+        path: ~/.zshrc
+        line: eval "$(direnv hook zsh)"
+
+    - ansible.builtin.blockinfile:
+        path: ~/.zshrc
+        block: |
+          setopt PROMPT_SUBST
+
+          show_virtual_env() {
+            if [[ -n "$VIRTUAL_ENV" && -n "$DIRENV_DIR" ]]; then
+              echo "($(basename $VIRTUAL_ENV))"
+            fi
+          }
+          PS1='$(show_virtual_env)'$PS1
