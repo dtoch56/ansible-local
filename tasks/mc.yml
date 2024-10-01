@@ -1,0 +1,33 @@
+# MinIO Client
+# The MinIO Client mc command line tool provides a modern alternative to UNIX commands like ls, cat, cp, mirror,
+# and diff with support for both filesystems and Amazon S3-compatible cloud storage services.
+# https://min.io/docs/minio/linux/reference/minio-mc.html#mc-install
+---
+- name: MinIO Client | Check current version
+  ansible.builtin.shell: mc -q -v
+  register: mc_version
+  changed_when: false
+  failed_when:
+    - mc_version.rc != 0
+    - '"mc: not found" not in mc_version.stderr'
+
+- name: MinIO Client | Set variables
+  ansible.builtin.set_fact:
+    mc_current_version: "{{ mc_version.stdout | regex_search('mc version (.+) ', '\\1') | first if mc_version.stdout | length > 0 else '' }}"
+
+- name: MinIO Client | Install mc
+  ansible.builtin.shell: curl https://dl.min.io/client/mc/release/linux-amd64/mc --create-dirs -o $HOME/minio-binaries/mc
+
+- name: MinIO Client | execute permissions
+  ansible.builtin.file:
+    path: $HOME/minio-binaries/mc
+    mode: u=rwx
+
+- name: MinIO Client | export path
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: "export PATH=$PATH:$HOME/minio-binaries/"
+  when: bashrc
+
+- name: MinIO Client | Shell autocompletion
+  ansible.builtin.shell: mc --autocompletion

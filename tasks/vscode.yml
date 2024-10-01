@@ -2,11 +2,11 @@
 # https://code.visualstudio.com/docs/
 ---
 - name: VSCode | install VSCode
-  when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and vscode_install_from_rep
+  when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and vscode.install_from_rep
   become: true
   block:
     - name: VSCode | install from repositories block
-      when: vscode_install_from_rep
+      when: vscode.install_from_rep
       block:
         - name: VSCode | Install gpg
           ansible.builtin.apt:
@@ -38,14 +38,14 @@
     - name: VSCode | Install from .deb file
       ansible.builtin.apt:
         deb: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
-      when: not vscode_install_from_rep
+      when: not vscode.install_from_rep
 
 - name: VSCode | install VSCode
   when: ansible_distribution == 'Fedora' or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
   become: true
   block:
     - name: VSCode | Fedora\CentOS\RedHat block
-      when: vscode_install_from_rep
+      when: vscode.install_from_rep
       block:
         - name: VSCode | Add repository key
           ansible.builtin.rpm_key:
@@ -61,11 +61,11 @@
     - name: VSCode | Install from .rpm
       ansible.builtin.apt:
         deb: https://code.visualstudio.com/sha/download?build=stable&os=linux-rpm-x64
-      when: not vscode_install_from_rep
+      when: not vscode.install_from_rep
 
 - name: VSCode | Install extensions
   ansible.builtin.shell: "code --install-extension {{ item }}"
-  with_items: "{{ vscode_extensions }}"
+  with_items: "{{ vscode.extensions }}"
 
 - name: VSCode | List extensions
   ansible.builtin.shell: "code --list-extensions --show-versions"

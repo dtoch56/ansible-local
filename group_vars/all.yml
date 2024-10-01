@@ -48,15 +48,15 @@ helm_plugins:
 
 # Minikube version to install (omit if latest)
 # minikube_required_version: 1.27.1
-minikube_memory: 8192
-minikube_cpu: 4
-
-minikube_addons:
-  - dashboard
-  - default-storageclass
-  - ingress
-  - metrics-server
-  - storage-provisioner
+minikube:
+  memory: 8192
+  cpu: 4
+  addons:
+    - dashboard
+    - default-storageclass
+    - ingress
+    - metrics-server
+    - storage-provisioner
 
 # task_required_version: 3.20.0
 
@@ -66,21 +66,21 @@ minikube_addons:
 # istio_required_version: 1.15.3
 istio_dir: /opt/istio
 
-vscode_install_from_rep: true
-
-vscode_extensions:
-  # VS Code Kubernetes Tools | https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools
-  - ms-kubernetes-tools.vscode-kubernetes-tools
-  # Docker for VS Code | https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker
-  - ms-azuretools.vscode-docker
-  # VS Code Dev Containers | https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers
-  - ms-vscode-remote.remote-containers
-  # GitLens (git supercharged | https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens
-  - eamodio.gitlens
-  # Go for VS Code | https://marketplace.visualstudio.com/items?itemName=golang.Go
-  - golang.go
-  # VS Code Makefile Tools | https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools
-  - ms-vscode.makefile-tools
+vscode:
+  install_from_rep: true
+  extensions:
+    # VS Code Kubernetes Tools | https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools
+    - ms-kubernetes-tools.vscode-kubernetes-tools
+    # Docker for VS Code | https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker
+    - ms-azuretools.vscode-docker
+    # VS Code Dev Containers | https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers
+    - ms-vscode-remote.remote-containers
+    # GitLens (git supercharged | https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens
+    - eamodio.gitlens
+    # Go for VS Code | https://marketplace.visualstudio.com/items?itemName=golang.Go
+    - golang.go
+    # VS Code Makefile Tools | https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools
+    - ms-vscode.makefile-tools
 
 # YandexCloud CLI version to install (omit if latest)
 # yc_required_version: 0.90.0

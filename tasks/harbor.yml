@@ -1,5 +1,5 @@
-# Istio command line tool (istioctl) use the command line interface (CLI) to manage your service mesh within the cluster.
-# https://istio.io/latest/docs/setup/getting-started/#download
+# Harbor
+#
 ---
 - name: harbor | Get latest release of Harbor
   community.general.github_release:

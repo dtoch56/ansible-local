@@ -182,3 +182,9 @@
       when:
         - "'harbor' not in ignore_tags"
 
+    - name: MinIO Client
+      ansible.builtin.import_tasks: tasks/mc.yml
+      tags: [mc]
+      when:
+        - "'mc' not in ignore_tags"
+

@@ -4,6 +4,7 @@
 
 - name: Terraform | Package repositories
   ansible.builtin.import_tasks: tasks/hashicorp.yml
+  become: true
 
 - name: Terraform | Install terraform
   ansible.builtin.package:

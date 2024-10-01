@@ -8,3 +8,5 @@
     recursive: false
     key_file: ~/.ssh/id_ed25519
   with_items: "{{ grouped_repos.urls }}"
+  ignore_errors: true
+

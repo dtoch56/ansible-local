@@ -1,48 +1,50 @@
 # minikube - local Kubernetes, focusing on making it easy to learn and develop for Kubernetes.
 # https://minikube.sigs.k8s.io/docs/start/
 ---
-- name: Minikube | Install KVM driver
-  ansible.builtin.import_tasks: tasks/kvm.yml
-
-- name: Minikube | Download minikube installation script
-  ansible.builtin.get_url:
-    url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-    dest: /tmp/minikube-linux-amd64
-    mode: '0700'
-
-- name: Minikube | Install minikube
-  ansible.builtin.shell: install minikube-linux-amd64 /usr/local/bin/minikube
-  args:
-    chdir: /tmp/
-  become: true
-
-- name: Minikube | Set KVM2 driver
-  ansible.builtin.shell: minikube config set driver kvm2
-
-- name: Minikube | check the status of minikube.
-  ansible.builtin.command: minikube status
-  register: minikube_status
-  changed_when: false
-  ignore_errors: true
-
-- name: Minikube | start minikube if it's not running.
-  ansible.builtin.command: "minikube start --memory={{ minikube_memory }} --cpus={{ minikube_cpu }}"
-  when: "not minikube_status.stdout or 'Running' not in minikube_status.stdout"
-  retries: 3
-  delay: 10
-
-- name: Minikube | Enable minikube addons
-  ansible.builtin.shell: "minikube addons enable {{ item }}"
-  with_items: "{{ minikube_addons }}"
-
-- name: Minikube | Minikube bash-completion
-  ansible.builtin.shell:
-    cmd: minikube completion bash > /etc/bash_completion.d/minikube
-  become: true
-  when: bashrc
-
-- name: Minikube | zsh completion for Minikube
-  ansible.builtin.lineinfile:
-    path: ~/.zshrc
-    line: source <(minikube completion zsh)
-  when: zshrc
+- debug:
+    var: minikube
+#- name: Minikube | Install KVM driver
+#  ansible.builtin.import_tasks: tasks/kvm.yml
+#
+#- name: Minikube | Download minikube installation script
+#  ansible.builtin.get_url:
+#    url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+#    dest: /tmp/minikube-linux-amd64
+#    mode: '0700'
+#
+#- name: Minikube | Install minikube
+#  ansible.builtin.shell: install minikube-linux-amd64 /usr/local/bin/minikube
+#  args:
+#    chdir: /tmp/
+#  become: true
+#
+#- name: Minikube | Set KVM2 driver
+#  ansible.builtin.shell: minikube config set driver kvm2
+#
+#- name: Minikube | check the status of minikube.
+#  ansible.builtin.command: minikube status
+#  register: minikube_status
+#  changed_when: false
+#  ignore_errors: true
+#
+#- name: Minikube | start minikube if it's not running.
+#  ansible.builtin.command: "minikube start --memory={{ minikube.memory }} --cpus={{ minikube.cpu }}"
+#  when: "not minikube_status.stdout or 'Running' not in minikube_status.stdout"
+#  retries: 3
+#  delay: 10
+#
+#- name: Minikube | Enable minikube addons
+#  ansible.builtin.shell: "minikube addons enable {{ item }}"
+#  with_items: "{{ minikube.addons }}"
+#
+#- name: Minikube | Minikube bash-completion
+#  ansible.builtin.shell:
+#    cmd: minikube completion bash > /etc/bash_completion.d/minikube
+#  become: true
+#  when: bashrc
+#
+#- name: Minikube | zsh completion for Minikube
+#  ansible.builtin.lineinfile:
+#    path: ~/.zshrc
+#    line: source <(minikube completion zsh)
+#  when: zshrc
