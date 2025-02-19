@@ -49,8 +49,9 @@ helm_plugins:
 # Minikube version to install (omit if latest)
 # minikube_required_version: 1.27.1
 minikube:
-  memory: 8192
-  cpu: 4
+  driver: "kvm2"
+  memory: .5 # of total host memory
+  cpu: .5 # of total host CPUs
   addons:
     - dashboard
     - default-storageclass

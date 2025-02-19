@@ -2,12 +2,24 @@
 - name: Tools | Install packages
   ansible.builtin.package:
     name:
+      # https://git-scm.com/
       - git
+      # https://www.vim.org/
       - vim
+      # https://github.com/scop/bash-completion
       - bash-completion
       - curl
+      # jq is a lightweight and flexible command-line JSON processor.
+      # https://jqlang.github.io/jq/
       - jq
+      # htop - an interactive process viewer
+      # https://htop.dev/
       - htop
+      - net-tools
+      # Generic Colouriser
+      # https://github.com/garabik/grc
+      - grc
+      - make
     state: latest
   become: true
 

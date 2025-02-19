@@ -1,0 +1,5 @@
+{
+    "cpus": {{ (ansible_processor_nproc * minikube.cpu) | int }},
+    "driver": "{{ minikube.driver }}",
+    "memory": {{ (ansible_memtotal_mb * minikube.memory) | int }}
+}

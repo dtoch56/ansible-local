@@ -1,23 +1,36 @@
 # Istio command line tool (istioctl) use the command line interface (CLI) to manage your service mesh within the cluster.
 # https://istio.io/latest/docs/setup/getting-started/#download
 ---
-- name: istioctl | Get latest release of istioctl
+- name: istio | Check current version
+  ansible.builtin.shell: istioctl version --short=true --remote=false
+  register: istioctl_version
+  changed_when: false
+  failed_when:
+    - istioctl_version.rc != 0
+    - '"istioctl: not found" not in istioctl_version.stderr'
+
+- name: istio | Set istioctl_current_version variables
+  ansible.builtin.set_fact:
+    istioctl_current_version: "{{ istioctl_version.stdout | regex_search(' ([0-9]+.[0-9]+.[0-9]+)', '\\1') | first if istioctl_version.stdout | length > 0 else '' }}"
+
+- name: istio | Get latest release of istioctl
   community.general.github_release:
     user: istio
     repo: istio
     action: latest_release
-  register: latest_istio
+  register: istioctl_latest_release
+  when: istioctl_required_version is not defined
 
-- name: istio | Check current version
-  ansible.builtin.shell: istioctl version --short --remote=false
-  ignore_errors: true
-  register: istioctl_version
 
-- name: istio | installation block
-  become: true
+- name: istio | Set istioctl_required_version variables
+  ansible.builtin.set_fact:
+    istioctl_required_version: "{{ istioctl_latest_release.tag | trim }}"
+  when: istioctl_latest_release is not skipped
+
+- name: istio | Install block
   when:
-    - istioctl_version.rc > 0
-    - latest_istio.tag not in istioctl_version.stdout
+    - istioctl_required_version != istioctl_current_version
+  become: true
   block:
     - name: istion | Create istio directory
       ansible.builtin.file:
@@ -25,16 +38,16 @@
         state: directory
         mode: '0755'
 
-    - name: "istio | Installing istio {{ latest_istio.tag }}"
+    - name: "istio | Installing istio {{ istioctl_required_version }}"
       ansible.builtin.unarchive:
-        src: "https://github.com/istio/istio/releases/download/{{ latest_istio.tag }}/istio-{{ latest_istio.tag }}-linux-{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}.tar.gz"
+        src: "https://github.com/istio/istio/releases/download/{{ istioctl_required_version }}/istio-{{ istioctl_required_version }}-linux-{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}.tar.gz"
         dest: "{{ istio_dir }}"
         mode: '0755'
         remote_src: true
 
     - name: istio | copy binary
       ansible.builtin.copy:
-        src: "{{ istio_dir }}/istio-{{ latest_istio.tag }}/bin/istioctl"
+        src: "{{ istio_dir }}/istio-{{ istioctl_required_version }}/bin/istioctl"
         dest: /usr/local/bin/istioctl
         mode: 0755
         force: true

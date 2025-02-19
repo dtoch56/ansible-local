@@ -1,0 +1,26 @@
+# tmux is a terminal multiplexer.
+# https://github.com/tmux/tmux/wiki
+---
+- name: tmux | Install packages
+  ansible.builtin.package:
+    name:
+      - tmux
+    state: latest
+  become: true
+
+- name: tmux | Git checkout
+  ansible.builtin.git:
+    repo: 'https://github.com/gpakosz/.tmux.git'
+    dest: ~/.tmux
+
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: ~/.tmux/.tmux.conf
+    dest: ~/.tmux.conf
+    state: link
+
+- name: tmux | Copy configuration file
+  ansible.builtin.copy:
+    src: ~/.tmux/.tmux.conf.local
+    dest: ~/.tmux.conf.local
+    mode: '0644'

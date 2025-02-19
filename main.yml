@@ -188,3 +188,26 @@
       when:
         - "'mc' not in ignore_tags"
 
+    - name: Cisco AnyConnect
+      ansible.builtin.import_tasks: tasks/anyconnect.yml
+      tags: [anyconnect]
+      when:
+        - "'anyconnect' not in ignore_tags"
+
+    - name: git_sizer
+      ansible.builtin.import_tasks: tasks/git_sizer.yml
+      tags: [git_sizer]
+      when:
+        - "'git_sizer' not in ignore_tags"
+
+    - name: tmux
+      ansible.builtin.import_tasks: tasks/tmux.yml
+      tags: [tmux]
+      when:
+        - "'tmux' not in ignore_tags"
+
+    - name: Local certificates
+      ansible.builtin.import_tasks: tasks/local_certs.yml
+      tags: [local_certs]
+      when:
+        - "'local_certs' not in ignore_tags"

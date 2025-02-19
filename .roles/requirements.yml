@@ -1,0 +1,5 @@
+---
+- src: git@github.com:dtoch56/ansible-role-certificates.git
+  version: v0.0.1
+  name: certificates
+  scm: git

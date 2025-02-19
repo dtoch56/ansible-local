@@ -1,0 +1,11 @@
+---
+- name: Cisco AnyConnect
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+  become: true
+  block:
+    - name: Cisco AnyConnect | install
+      ansible.builtin.package:
+        name:
+          - network-manager-openconnect
+          - network-manager-openconnect-gnome
+        state: latest

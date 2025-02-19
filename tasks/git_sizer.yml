@@ -1,0 +1,40 @@
+# git-sizer computes various size metrics for a local Git repository, flagging those that might cause you problems or inconvenience.
+# https://github.com/github/git-sizer
+---
+- name: git-sizer | Check required version
+  when: git_sizer_required_version is not defined
+  block:
+    - name: git-sizer | Get latest release
+      community.general.github_release:
+        user: github
+        repo: git-sizer
+        action: latest_release
+      register: git_sizer_latest_release
+
+    - name: git-sizer | Set required version
+      ansible.builtin.set_fact:
+        git_sizer_required_version: "{{ git_sizer_latest_release.tag | regex_replace('^v', '') }}"
+
+- name: git-sizer | Check current version
+  ansible.builtin.shell: /usr/local/bin/git-sizer --version
+  register: git_sizer_version
+  failed_when:
+    - git_sizer_version.rc != 0
+    - '"git-sizer: not found" not in git_sizer_version.stderr'
+
+- name: git-sizer | Set git_sizer_current_version variables
+  ansible.builtin.set_fact:
+    git_sizer_current_version: "{{ git_sizer_version.stdout | regex_search(' ([0-9]+.[0-9]+.[0-9]+)$', '\\1') | first if git_sizer_version.stdout | length > 0 else '' }}"
+
+- name: git-sizer | Install block
+  when:
+    - git_sizer_required_version != (git_sizer_current_version | replace('dive ','v'))
+  become: true
+  block:
+    - name: "git-sizer | Installing git-sizer {{ git_sizer_required_version }}"
+      ansible.builtin.unarchive:
+        src: "https://github.com/github/git-sizer/releases/download/v{{ git_sizer_required_version }}/git-sizer-{{ git_sizer_required_version }}-linux-amd64.zip"
+        dest: /usr/local/bin
+        remote_src: yes
+        include:
+          - git-sizer

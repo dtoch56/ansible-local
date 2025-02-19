@@ -1,25 +1,37 @@
 # https://jenkins-x.io/v3/admin/setup/jx3/
 ---
+- name: jx | Check current version
+  ansible.builtin.shell: jx version -s
+  ignore_errors: true
+  register: jx_version
+  failed_when:
+    - jx_version.rc != 0
+    - '"jx: not found" not in jx_version.stderr'
+
+- name: jx | Set jx_current_version variables
+  ansible.builtin.set_fact:
+    jx_current_version: "{{ jx_version.stdout if jx_version.stdout | length > 0 else '' }}"
+
 - name: jx | Get latest release of jx
   community.general.github_release:
     user: jenkins-x
     repo: jx
     action: latest_release
-  register: latest_jx
+  register: jx_latest_release
+  when: jx_required_version is not defined
 
-- name: jx | Check current version
-  ansible.builtin.shell: /usr/local/bin/jx version -s
-  ignore_errors: true
-  register: jx_version
+- name: jx | Set jx_required_version variables
+  ansible.builtin.set_fact:
+    jx_required_version: "{{ jx_latest_release.tag | trim }}"
+  when: jx_latest_release is not skipped
 
-- name: "jx | Installing jx {{ latest_jx.tag }}"
+- name: "jx | Installing jx {{ jx_required_version }}"
   ansible.builtin.unarchive:
-    src: "https://github.com/jenkins-x/jx/releases/download/{{ latest_jx.tag }}/jx-linux-{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}.tar.gz"
+    src: "https://github.com/jenkins-x/jx/releases/download/{{ jx_required_version }}/jx-linux-{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}.tar.gz"
     include: jx
     dest: /usr/local/bin
     mode: 0755
     remote_src: true
   become: true
   when:
-    - jx_version.rc > 0
-    - jx_version.stdout not in latest_jx.tag
+    - jx_required_version != jx_current_version
